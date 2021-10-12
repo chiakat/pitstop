@@ -35,10 +35,10 @@ Once the project moves into development, the press release can be used as a touc
   > "Sip & Go is the instant relief we've all been waiting for."
 
 ## How to Get Started ##
-  > Go to toiletsandtap.com and enter your location
+  > Go to sipandgo.com and enter your location
 
 ## Customer Quote ##
   > "I'm so thankful for Sip & Go. It was truly a life-saver when I was out traveling. It helped me find exactly what I needed when I was thirsty and when I needed to go. It's amazing that it's free!"
 
 ## Closing and Call to Action ##
-  > Check out Sip & Go now to see what free water and restrooms are available near you!
+  > Check out Sip & Go now to find free water and restrooms available near you!
