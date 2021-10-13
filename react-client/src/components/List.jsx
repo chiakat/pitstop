@@ -6,6 +6,13 @@ const List = ({results}) => {
     console.log('clicked', place);
   }
 
+  const renderRatings = (place) => {
+    if (place.user_ratings_total > 0) {
+        return <div>⭐ {place.rating} &#40;{place.user_ratings_total}&#41; </div>
+    }
+    return null;
+  }
+
   return (
     <>
     <div className="filters">
@@ -14,11 +21,16 @@ const List = ({results}) => {
       <button id="free">Free</button>
     </div>
     <div className="results">
-      <h2>Results</h2>
-      <ul id="places"></ul>
+      <ul id="places">
       {results.map((place) => (
-        <li onClick={handleClick}>{place.name}</li>
+        <li key={place.place_id} onClick={handleClick}>
+          <h4>{place.name}</h4>
+          <div>Status: {place.business_status}</div>
+          {renderRatings(place)}
+          <div>{place.buiness_status}</div>
+        </li>
       ))}
+      </ul>
     </div>
     </>
   )
