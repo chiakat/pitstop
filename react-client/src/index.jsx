@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
 
-import Add from './components/Add.jsx';
+import AddMarker from './components/AddMarker.jsx';
 import List from './components/List.jsx';
 import Map from './components/Map.jsx';
-// import Home from './components/Home.jsx';
+import AddForm from './components/AddForm.jsx';
 
 
 class App extends React.Component {
@@ -89,7 +89,7 @@ class App extends React.Component {
     } else if (view === 'list') {
       return <List changeView={this.changeView} results={results} inputText={location} />;
     } else if (view === 'add') {
-      return <Add changeView={this.changeView}/>;
+      return <AddForm changeView={this.changeView}/>;
     } else {
       return (
         <>
@@ -107,7 +107,7 @@ class App extends React.Component {
               value={this.state.location}
               onChange={(e) => this.handleChange(e)}
             />
-            <button>Go!</button>
+            <button id="go">Go!</button>
           </form>
         </div>
         </>

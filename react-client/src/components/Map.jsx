@@ -4,7 +4,7 @@ import { GOOGLE_API_KEY } from '../../../server/config.js';
 import $ from 'jquery';
 
 
-const Map = ({inputText}) => {
+const Map = ({inputText, updateResults}) => {
 
   let map;
   let marker;
@@ -15,7 +15,7 @@ const Map = ({inputText}) => {
   let longitude;
   let calcLocation;
 
-  const [searchResults, setResults] = useState([]);
+  // const [searchResults, setResults] = useState([]);
 
   const loader = new Loader({
     apiKey: GOOGLE_API_KEY,
@@ -39,7 +39,6 @@ const Map = ({inputText}) => {
         inputLocation = results[0].geometry.location;
         latitude = inputLocation.lat();
         longitude = inputLocation.lng();
-        console.log(latitude, longitude)
         calcLocation = { lat: latitude, lng: longitude}
         map.setCenter(inputLocation);
         marker.setPosition(inputLocation);
@@ -127,11 +126,13 @@ const Map = ({inputText}) => {
             const service = new google.maps.places.PlacesService(map);
             // Perform a nearby search.
             service.nearbySearch(
-              {location: response, radius: 500, type: "public restroom"},
+              {location: response, radius: 500, type: "park"},
               (results, status, pagination) => {
                 if (status !== "OK" || !results) return;
                 addPlaces(results, map);
                 console.log('here are the results', results);
+                updateResults(results);
+
                 // moreButton.disabled = !pagination || !pagination.hasNextPage;
                 // if (pagination && pagination.hasNextPage) {
                 //   getNextPage = () => {
@@ -150,9 +151,7 @@ const Map = ({inputText}) => {
       })
   };
 
-  initMap(inputText)
-
-
+  useEffect(() => initMap(inputText), []);
 
   return (
     <>

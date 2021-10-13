@@ -1,12 +1,16 @@
 import React from 'react';
 
-const List = (placesList) => {
+const List = ({results}) => {
+
+  const handleClick = (place) => {
+    console.log('clicked', place);
+  }
 
   return (
-    <div id="sidebar">
+    <div class="results">
       <h2>Results</h2>
       <ul id="places"></ul>
-      {placesList.map((place) => (
+      {results.map((place) => (
         <li onClick={handleClick}>{place.name}</li>
       ))}
     </div>

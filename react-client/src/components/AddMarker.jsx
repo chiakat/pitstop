@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Add = () => {
+const AddMarker = () => {
         // ADD MARKERS FOR THE MAP============================
         // // Array of markers
         // let markers = [
@@ -55,9 +55,9 @@ const Add = () => {
         //   addMarker({coords: e.latLng})
         // })
   return (
-    <div>Add</div>
+    <div>Add Marker</div>
   )
 
 }
 
-export default Add;
+export default AddMarker;
