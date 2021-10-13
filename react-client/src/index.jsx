@@ -119,19 +119,19 @@ class App extends React.Component {
             ? 'nav-selected'
             : 'nav-unselected'}
           onClick={() => this.changeView('map')}>
-            Find Water and Restrooms
+            Map
           </span>
           <span className={this.state.view === 'list'
             ? 'nav-selected'
             : 'nav-unselected'}
           onClick={() => this.changeView('list')}>
-            List All Nearby
+            List
           </span>
           <span className={this.state.view === 'add'
             ? 'nav-selected'
             : 'nav-unselected'}
           onClick={() => this.changeView('add')}>
-            Add a restroom or water fountain
+            Add More
           </span>
         </div>
 
