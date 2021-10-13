@@ -1,6 +1,20 @@
 import React from 'react';
 
 const AddMarker = () => {
+
+        //   // You can use a LatLng literal in place of a google.maps.LatLng object when
+        // // creating the Marker object. Once the Marker object is instantiated, its
+        // // position will be available as a google.maps.LatLng object. In this case,
+        // // we retrieve the marker's position using the
+        // // google.maps.LatLng.getPosition() method.
+        // const infowindow = new google.maps.InfoWindow({
+        //   content: "<p>Marker Location:" + marker.getPosition() + "</p>",
+        // });
+
+        // google.maps.event.addListener(marker, "click", () => {
+        //   infowindow.open(map, marker);
+        // });
+
         // ADD MARKERS FOR THE MAP============================
         // // Array of markers
         // let markers = [

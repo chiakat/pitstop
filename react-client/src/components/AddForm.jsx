@@ -23,6 +23,7 @@ class AddForm extends React.Component {
       verified: false,
       avg_rating: 0,
       count_rating: 0,
+      type: 'toilet',
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);

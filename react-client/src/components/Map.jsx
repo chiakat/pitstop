@@ -25,6 +25,7 @@ const Map = ({inputText, updateResults}) => {
 
   // const sanFrancisco = {lat: 37.7749, lng: 122.4194};
   const mapOptions = {
+    mapId: 'a121546c2907cd53',
     center: inputLocation,
     zoom: 16
   };
@@ -76,7 +77,7 @@ const Map = ({inputText, updateResults}) => {
         };
 
         new google.maps.Marker({
-          map,
+          map: map,
           icon: image,
           title: place.name,
           position: place.geometry.location,
@@ -124,14 +125,24 @@ const Map = ({inputText, updateResults}) => {
             console.log(response)
             // Create the places service.
             const service = new google.maps.places.PlacesService(map);
-            // Perform a nearby search.
-            service.nearbySearch(
-              {location: response, radius: 500, type: "park"},
+
+            // Perform a text search.
+            service.TextSearchRequest(
+              {location: response, radius: 500, query: "restroom"},
               (results, status, pagination) => {
                 if (status !== "OK" || !results) return;
                 addPlaces(results, map);
                 console.log('here are the results', results);
                 updateResults(results);
+
+            // // Perform a nearby search.
+            // service.nearbySearch(
+            //   {location: response, radius: 500, type: "park"},
+            //   (results, status, pagination) => {
+            //     if (status !== "OK" || !results) return;
+            //     addPlaces(results, map);
+            //     console.log('here are the results', results);
+            //     updateResults(results);
 
                 // moreButton.disabled = !pagination || !pagination.hasNextPage;
                 // if (pagination && pagination.hasNextPage) {
