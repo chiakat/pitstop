@@ -10,6 +10,10 @@ const Map = ({inputText}) => {
   let marker;
   let geocoder;
   let infoWindow;
+  let inputLocation;
+  let latitude;
+  let longitude;
+  let calcLocation;
 
   const loader = new Loader({
     apiKey: GOOGLE_API_KEY,
@@ -17,32 +21,46 @@ const Map = ({inputText}) => {
     libraries: ["places"]
   });
 
+
+  const sanFrancisco = {lat: 37.7749, lng: 122.4194};
   const mapOptions = {
-    center: {
-      lat: 37.7749,
-      lng: 122.4194
-    },
+    center: inputLocation,
     zoom: 16
   };
 
-  // converts address input to latitide and longitude and centers map
+  // converts address input to latitude and longitude and centers map
   const geocode = (request) => {
     geocoder
       .geocode(request)
       .then((result) => {
-        console.log(results)
+        console.log(result)
         const { results } = result;
-        map.setCenter(results[0].geometry.location);
-        marker.setPosition(results[0].geometry.location);
+        inputLocation = results[0].geometry.location;
+        latitude = inputLocation.lat();
+        longitude = inputLocation.lng();
+        console.log(latitude, longitude)
+        calcLocation = { lat: latitude, lng: longitude}
+        map.setCenter(inputLocation);
+        marker.setPosition(inputLocation);
         marker.setMap(map);
+        return calcLocation;
       })
       .catch((e) => {
         alert("Geocode was not successful for the following reason: " + e);
       });
   }
 
+  // let getNextPage;
+  // const moreButton = document.getElementById("more");
 
-  // adds more places to the map
+  // moreButton.onclick = function () {
+  //   moreButton.disabled = true;
+  //   if (getNextPage) {
+  //     getNextPage();
+  //   }
+  // };
+
+  // // adds more places to the map
   const addPlaces = (places, map) => {
     const placesList = document.getElementById("places");
 
@@ -80,37 +98,51 @@ const Map = ({inputText}) => {
         console.log('initMap was called', address)
         map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
+        marker = new google.maps.Marker({
+          map,
+          // icon: 'https://img.icons8.com/external-those-icons-fill-those-icons/24/000000/external-toilet-interior-furniture-those-icons-fill-those-icons-1.png'
+        });
+
         geocoder = new google.maps.Geocoder();
-        geocode({ address: address })
+        geocoder
+          .geocode({address: address} )
+          .then((result) => {
+            console.log(result)
+            const { results } = result;
+            inputLocation = results[0].geometry.location;
+            latitude = inputLocation.lat();
+            longitude = inputLocation.lng();
+            console.log(latitude, longitude)
+            calcLocation = { lat: latitude, lng: longitude}
+            map.setCenter(inputLocation);
+            marker.setPosition(inputLocation);
+            marker.setMap(map);
+            return calcLocation;
+          })
+          .then((response) => {
+            console.log(response)
+            // Create the places service.
+            const service = new google.maps.places.PlacesService(map);
+            // Perform a nearby search.
+            service.nearbySearch(
+              {location: response, radius: 500, type: "public restroom"},
+              (results, status, pagination) => {
+                if (status !== "OK" || !results) return;
 
-          // Create the places service.
-        const service = new google.maps.places.PlacesService(map);
-        let getNextPage;
-        const moreButton = document.getElementById("more");
+                addPlaces(results, map);
+                // moreButton.disabled = !pagination || !pagination.hasNextPage;
+                // if (pagination && pagination.hasNextPage) {
+                //   getNextPage = () => {
+                //     // Note: nextPage will call the same handler function as the initial call
+                //     pagination.nextPage();
+                //   };
+                // }
+              }
+            );
+          })
+        })
 
-        moreButton.onclick = function () {
-          moreButton.disabled = true;
-          if (getNextPage) {
-            getNextPage();
-          }
-        };
 
-        // Perform a nearby search.
-        service.nearbySearch(
-          { location: address, radius: 500, type: "public toilet" },
-          (results, status, pagination) => {
-            if (status !== "OK" || !results) return;
-
-            addPlaces(results, map);
-            moreButton.disabled = !pagination || !pagination.hasNextPage;
-            if (pagination && pagination.hasNextPage) {
-              getNextPage = () => {
-                // Note: nextPage will call the same handler function as the initial call
-                pagination.nextPage();
-              };
-            }
-          }
-        );
 
 
 
@@ -153,10 +185,6 @@ const Map = ({inputText}) => {
         //   addMarker(marker);
         // })
 
-        // marker = new google.maps.Marker({
-        //   map,
-        //   // icon: 'https://img.icons8.com/external-those-icons-fill-those-icons/24/000000/external-toilet-interior-furniture-those-icons-fill-those-icons-1.png'
-        // });
 
         // infoWindow = new google.maps.InfoWindow({
         //   // replace this content with info about each bathroom
@@ -172,7 +200,7 @@ const Map = ({inputText}) => {
         //   addMarker({coords: e.latLng})
         // })
 
-      })
+
       .catch(e => {
         console.log(e);
         alert('Failed to load. Please try again.')
