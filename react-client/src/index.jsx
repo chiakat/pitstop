@@ -86,10 +86,11 @@ class App extends React.Component {
     } else {
       return (
         <>
-        <div className="search">Find...
-        <br />
+        <div> Find...
+        <div className="search">
           <button onClick={this.toggleToilets}>Toilets</button>
           <button onClick={this.toggleWater}>Water</button>
+        </div>
           <form onSubmit={(e) => this.handleSearch(e)}>
             <input
               type='search'
