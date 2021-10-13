@@ -68,7 +68,8 @@ const Map = ({inputText}) => {
     for (const place of places) {
       if (place.geometry && place.geometry.location) {
         const image = {
-          url: place.icon,
+         // url: place.icon,
+          url: '/images/icons8-toilet-52.png',
           size: new google.maps.Size(71, 71),
           origin: new google.maps.Point(0, 0),
           anchor: new google.maps.Point(17, 34),
