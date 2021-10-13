@@ -5,7 +5,7 @@ import $ from 'jquery';
 import Add from './components/Add.jsx';
 import List from './components/List.jsx';
 import Map from './components/Map.jsx';
-import Home from './components/Home.jsx';
+// import Home from './components/Home.jsx';
 
 
 class App extends React.Component {
@@ -13,13 +13,18 @@ class App extends React.Component {
     super();
     this.state = {
       view: 'home',
-      selectedItem: ''
+      location: '',
+      toilets: true,
+      water: false
     };
 
     this.changeView = this.changeView.bind(this);
     this.renderView = this.renderView.bind(this);
     this.handleClick = this.handleClick.bind(this);
-    this.renderMap = this.renderMap.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.toggleWater = this.toggleWater.bind(this);
+    this.toggleToilets = this.toggleToilets.bind(this);
 
   }
 
@@ -27,10 +32,32 @@ class App extends React.Component {
 
   }
 
-  renderMap() {
-    $.get('/', null, (data) => {
+  toggleToilets() {
+    this.setState({
+      toilets: !this.state.toilets,
+    })
+  }
 
-    });
+  toggleWater() {
+    this.setState({
+      water: !this.state.water,
+    })
+  }
+
+  handleChange(e) {
+    this.setState({
+      location: e.target.value,
+    })
+  }
+
+  handleSearch(e) {
+    e.preventDefault();
+    console.log('Searching', this.state.location)
+    if (!this.state.location) {
+      alert('Please enter a location');
+    } else {
+      this.changeView('map');
+    }
   }
 
   changeView(option) {
@@ -49,15 +76,34 @@ class App extends React.Component {
   }
 
   renderView() {
-    const {view } = this.state;
+    const { view, location } = this.state;
     if (view === 'map') {
-      return <Map handleClick={this.handleClick} />;
+      return <Map changeView={this.changeView} inputText={this.state.location} />;
     } else if (view === 'list') {
-      return <List handleClick={this.handleClick} />;
+      return <List changeView={this.changeView} inputText={this.state.location} />;
     } else if (view === 'add') {
-      return <Add />;
+      return <Add changeView={this.changeView}/>;
     } else {
-      return <Home />;
+      return (
+        <>
+        <div className="search">Find...
+        <br />
+          <button onClick={this.toggleToilets}>Toilets</button>
+          <button onClick={this.toggleWater}>Water</button>
+          <form onSubmit={(e) => this.handleSearch(e)}>
+            <input
+              type='search'
+              id='search'
+              placeholder='Enter a location...'
+              name='q'
+              value={this.state.location}
+              onChange={(e) => this.handleChange(e)}
+            />
+            <button>Go!</button>
+          </form>
+        </div>
+        </>
+      )
     }
   }
 

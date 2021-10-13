@@ -1,5 +1,8 @@
 ### node etc ###
 
+# Keys and Passwords
+config.js
+
 # Logs
 logs
 *.log
