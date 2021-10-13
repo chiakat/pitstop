@@ -12,22 +12,26 @@ class AddForm extends React.Component {
       location: '',
       directions: '',
       hours: '',
-      public: true,
-      accessible: true,
-      male: true,
-      female: true,
-      family: false,
+      publicOrPrivate: '',
+      isAccessible: false,
+      male: false,
+      female: false,
       unisex: false,
-      free: true,
-      key_req: false,
-      verified: false,
+      isFree: false,
+      needKey: false,
+      isVerified: false,
+      hasToiletPaper: false,
+      hasSoap: false,
+      hasChangingTable: false,
+      rating: 0,
       avg_rating: 0,
       count_rating: 0,
       type: 'toilet',
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-
+    // this.handleSelection = this.handleSelection(this);
+    // this.handleRating = this.handleRating(this);
   }
 
   // componentDidMount() {
@@ -36,7 +40,7 @@ class AddForm extends React.Component {
 
   handleInputChange(event) {
     const target = event.target;
-    const value = target.value;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
 
     this.setState({
@@ -44,36 +48,80 @@ class AddForm extends React.Component {
     });
   }
 
+  // handleSelection(event) {
+  //   if (event.target.value === 'private') {
+  //     this.setState({
+  //       publicOrPrivate: false,
+  //     })
+  //   } else {
+  //     this.setState({
+  //       publicOrPrivate: true,
+  //     })
+  //   }
+  // }
+
+  // handleRating(event) {
+  //   this.setState({
+  //     rating: event.target.value,
+  //   })
+  // }
   // check for errors in form before submission
   // Requires all input fields to have a value before a submission can be made.
   // Performs input validation on the email address. (Email must be of form local@domain.)
   // Upon submission, sends the RSVP data to your Express server.
   handleSubmit(event) {
 
-    const { firstName, lastName, email, numberOfGuests } = this.state;
+    const { placeId, name,location, directions, hours, publicOrPrivate, isAccessible, male, female,
+      hasChangingTable, hasToiletPaper, hasSoap, unisex, isFree, needKey, isVerified, rating, type } = this.state;
     event.preventDefault();
-    if (firstName === '' || lastName === '' || email === '' || numberOfGuests === 0) {
-      alert('Please complete all fields to submit.');
-    } else if (email.search('\@') === -1) {
-      alert('Please enter a valid email.');
-    } else {
+    if (name === '' || location === '' || rating === 0) {
+      alert('Please provide a name and rating to submit.');
+     }
       console.log('clicked')
       // send data with axios
-      axios.post('/rsvps', {
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        numberOfGuests: numberOfGuests
+      axios.post('/addRecord', {
+        placeId: placeId,
+        name: name,
+        location: location,
+        directions: directions,
+        hours: hours,
+        publicOrPrivate: publicOrPrivate,
+        isAccessible: isAccessible,
+        male: male,
+        female: female,
+        hasToiletPaper: hasToiletPaper,
+        hasSoap: hasSoap,
+        hasChangingTable: hasChangingTable,
+        unisex: unisex,
+        isFree: isFree,
+        needKey: needKey,
+        isVerified: isVerified,
+        rating: rating,
+        type: type,
       })
         .then((response) => {
           console.log('success')
           console.log(response);
           // clear states after successful submission
           this.setState = {
-            firstName: '',
-            lastName: '',
-            email: '',
-            numberOfGuests: 0
+            placeId: '',
+            name: '',
+            location: '',
+            directions: '',
+            hours: '',
+            publicOrPrivate: true,
+            isAccessible: true,
+            male: true,
+            female: true,
+            hasChangingTable: false,
+            unisex: false,
+            isFree: true,
+            needKey: false,
+            isVerified: false,
+            rating: 0,
+            avg_rating: 0,
+            count_rating: 0,
+            type: 'toilet',
           };
           alert('Success! Thanks for your RSVP!');
         })
@@ -82,51 +130,118 @@ class AddForm extends React.Component {
           alert('Your request could not be completed. Please try again.');
         })
     }
-  }
+
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          First Name:
-          <input
-            name="firstName"
-            type="text"
-            value={this.state.firstName}
-            onChange={this.handleInputChange} />
-        </label>
-        <br />
-        <label>
-          Last Name:
-          <input
-            name="lastName"
-            type="text"
-            value={this.state.lastName}
-            onChange={this.handleInputChange} />
-        </label>
-        <br />
-        <label>
-          Email:
-          <input
-            name="email"
-            type="text"
-            value={this.state.email}
-            onChange={this.handleInputChange} />
-        </label>
-        <br />
-        <label>
-          Number of guests:
-          <input
-            name="numberOfGuests"
-            type="number"
-            value={this.state.numberOfGuests}
-            onChange={this.handleInputChange} />
-        </label>
-        <button onSubmit={this.handleSubmit}>Submit</button>
-      </form>
+        <form className='addForm' onSubmit={this.handleSubmit}>
+          <label>
+            Name of Location:
+            <input
+              name="name"
+              type="text"
+              placeholder="Ferry Building"
+              value={this.state.name}
+              onChange={this.handleInputChange} />
+          </label>
+          <br />
+          <label>
+            Additional Directions:
+            <input
+              name="directions"
+              type="text"
+              placeholder="i.e. on the second floor around the corner"
+              value={this.state.directions}
+              onChange={this.handleInputChange} />
+          </label>
+          <br />
+          <label>
+            Operating Hours:
+            <input
+              name="hours"
+              type="text"
+              placeholder="i.e. Mon-Fri 9am-7pm, Sat-Sun 9am-3pm"
+              value={this.state.hours}
+              onChange={this.handleInputChange} />
+          </label>
+          <br />
+          <label>
+            Public or Private?
+            <br />
+            <select name="public" type="string" onChange={this.handleInputChange}>
+              <option defaultValue="public">Public</option>
+              <option value='private'>Private</option>
+            </select>
+          </label>
+          <br />
+          <label>
+            Your Rating
+            <br />
+            <select name="rating" type="number" onChange={this.handleInputChange}>
+              <option defaultValue="0">-</option>
+              <option value='5'>5</option>
+              <option value='4'>4</option>
+              <option value='3'>3</option>
+              <option value='2'>2</option>
+              <option value='1'>1</option>
+            </select>
+          </label>
+
+          <div className="checkboxes">
+            <h4>Please select all that apply:</h4>
+
+            <label>
+              <input name="isFree" type="checkbox" checked={this.state.isFree} onChange={this.handleInputChange} />
+              Free
+            </label>
+            <br />
+            <label>
+              <input name="needKey" type="checkbox" checked={this.state.needKey} onChange={this.handleInputChange} />
+              Key Required
+            </label>
+            <br />
+            <label>
+              <input name="isAccessible" type="checkbox" checked={this.state.isAccessible} onChange={this.handleInputChange} />
+              Accessible
+            </label>
+            <br />
+            <label>
+              <input name="male" type="checkbox" checked={this.state.male} onChange={this.handleInputChange} />
+              Male
+            </label>
+            <br />
+            <label>
+              <input name="female" type="checkbox" checked={this.state.female} onChange={this.handleInputChange} />
+              Female
+            </label>
+            <br />
+            <label>
+              <input name="unisex" type="checkbox" checked={this.state.unisex} onChange={this.handleInputChange} />
+              Unisex
+            </label>
+            <br />
+            <label>
+              <input name="hasToiletPaper" type="checkbox" checked={this.state.hasToiletPaper} onChange={this.handleInputChange} />
+              Has Toilet Paper
+            </label>
+            <br />
+            <label>
+              <input name="hasSoap" type="checkbox" checked={this.state.hasSoap} onChange={this.handleInputChange} />
+              Has Soap
+            </label>
+            <br />
+            <label>
+              <input name="hasChangingTable" type="checkbox" checked={this.state.hasChangingTable} onChange={this.handleInputChange} />
+              Has Changing Table
+            </label>
+            <br />
+          </div>
+          <br />
+          <button id="submit" onSubmit={this.handleSubmit}>Submit</button>
+        </form>
     );
   }
-}
 
+}
 
 export default AddForm;
