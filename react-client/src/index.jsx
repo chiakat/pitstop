@@ -15,7 +15,8 @@ class App extends React.Component {
       view: 'home',
       location: '',
       toilets: true,
-      water: false
+      water: false,
+      results: [],
     };
 
     this.changeView = this.changeView.bind(this);
@@ -25,7 +26,7 @@ class App extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.toggleWater = this.toggleWater.bind(this);
     this.toggleToilets = this.toggleToilets.bind(this);
-
+    this.updateResults = this.updateResults.bind(this);
   }
 
   componentDidMount() {
@@ -75,12 +76,18 @@ class App extends React.Component {
     });
   }
 
+  updateResults(searchResults) {
+    this.setState({
+      results: searchResults,
+    })
+  }
+
   renderView() {
-    const { view, location } = this.state;
+    const { view, location, results } = this.state;
     if (view === 'map') {
-      return <Map changeView={this.changeView} inputText={this.state.location} />;
+      return <Map changeView={this.changeView} updateResults={this.updateResults} inputText={location} />;
     } else if (view === 'list') {
-      return <List changeView={this.changeView} inputText={this.state.location} />;
+      return <List changeView={this.changeView} results={results} inputText={location} />;
     } else if (view === 'add') {
       return <Add changeView={this.changeView}/>;
     } else {

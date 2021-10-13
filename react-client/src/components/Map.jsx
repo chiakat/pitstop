@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 import { GOOGLE_API_KEY } from '../../../server/config.js';
 import $ from 'jquery';
@@ -15,14 +15,15 @@ const Map = ({inputText}) => {
   let longitude;
   let calcLocation;
 
+  const [searchResults, setResults] = useState([]);
+
   const loader = new Loader({
     apiKey: GOOGLE_API_KEY,
     version: "weekly",
     libraries: ["places"]
   });
 
-
-  const sanFrancisco = {lat: 37.7749, lng: 122.4194};
+  // const sanFrancisco = {lat: 37.7749, lng: 122.4194};
   const mapOptions = {
     center: inputLocation,
     zoom: 16
@@ -83,11 +84,11 @@ const Map = ({inputText}) => {
 
         const li = document.createElement("li");
 
-        li.textContent = place.name;
-        placesList.appendChild(li);
-        li.addEventListener("click", () => {
-          map.setCenter(place.geometry.location);
-        });
+        // li.textContent = place.name;
+        // placesList.appendChild(li);
+        // li.addEventListener("click", () => {
+        //   map.setCenter(place.geometry.location);
+        // });
       }
     }
   }
@@ -128,8 +129,8 @@ const Map = ({inputText}) => {
               {location: response, radius: 500, type: "public restroom"},
               (results, status, pagination) => {
                 if (status !== "OK" || !results) return;
-
                 addPlaces(results, map);
+                console.log('here are the results', results);
                 // moreButton.disabled = !pagination || !pagination.hasNextPage;
                 // if (pagination && pagination.hasNextPage) {
                 //   getNextPage = () => {
@@ -141,65 +142,6 @@ const Map = ({inputText}) => {
             );
           })
         })
-
-
-
-
-
-        // ADD MARKERS FOR THE MAP============================
-        // // Array of markers
-        // let markers = [
-        //   {
-        //     coords: {lat: 33, lng: -117},
-        //     // iconImage: 'react-client/dist/images/icons8-toilet-26.png',
-        //     content: `<h4>Test</h4>`
-        //   },
-        //   {
-        //     coords: {lat: 34, lng: -118},
-        //     // iconImage: 'react-client/dist/images/icons8-toilet-26.png',
-        //     content: `<h4>Test</h4>`
-        //   }
-        // ];
-
-        // // Add Marker Function
-        // const addMarker = (newMarker) => {
-        //   marker = new google.maps.Marker({
-        //     position: newMarker.coords,
-        //     map: map,
-        //     // icon: newMarker.iconImage,
-        //   });
-        //   // check for custom icon
-        //   if(newMarker.iconImage) {
-        //     marker.setIcon(newMarker.iconImage)
-        //   }
-        //   // check content
-        //   if(newMarker.content) {
-        //     infoWindow = new google.maps.InfoWindow({
-        //       content: newMarker.content
-        //     });
-        //   }
-        // }
-
-        // // Loop through markers
-        // markers.forEach(marker => {
-        //   addMarker(marker);
-        // })
-
-
-        // infoWindow = new google.maps.InfoWindow({
-        //   // replace this content with info about each bathroom
-        //   content: `<h1>${address}</h1>`
-        // });
-
-        // marker.addListener('click', () => {
-        //   infoWindow.open(map, marker);
-        // })
-
-        // // Add new marker
-        // map.addListener(map, 'click', (e) => {
-        //   addMarker({coords: e.latLng})
-        // })
-
 
       .catch(e => {
         console.log(e);
@@ -215,11 +157,6 @@ const Map = ({inputText}) => {
     <>
     <div id="container">
       <div id="map"></div>
-      <div id="sidebar">
-        <h2>Results</h2>
-        <ul id="places"></ul>
-        <button id="more">Load more results</button>
-      </div>
     </div>
     </>
   )
