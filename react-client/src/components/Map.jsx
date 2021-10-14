@@ -136,13 +136,6 @@ const Map = ({inputText, updateResults, toilets, water, changeView, getNewLocati
   const addDetail = (location) => {
     console.log('location', location)
     changeView('add');
-    // console.log('submitted location', location)
-    // loader.load().then((google) => {
-    //   const geocoder = new google.maps.Geocoder();
-    //   geocoder
-    //   .geocode(location)
-    //   .then(() => changeView('add'))
-    // })
   }
 
   // initiates the map using options and functions above

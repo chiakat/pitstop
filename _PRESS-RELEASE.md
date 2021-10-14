@@ -17,13 +17,13 @@ Once the project moves into development, the press release can be used as a touc
  -->
 
 ## Heading ##
-  > Toilet & Tap: Free Water & Toilet Finder
+  > Toilets & Tap: Free Water & Toilet Finder
 
 ## Sub-Heading ##
   > Easily find public restrooms and water fountains near you.
 
 ## Summary ##
-  > Toilet & Tap, a free water & toilet finder, will instantly show you all free and available restroom and drinking fountains near you for when you really need it. This mobile-friendly web-based app does not require any download to make it easy for you to find what you need. Simply enter your location, or allow search nearby to see the closest options near you. See distance and time to walk from your location at a glance and click to get directions. Filter for accessible restrooms and even show free, private resources. Help keep our database up-to-date by adding new resources or editing existing records. With this app, relief is only a click away.
+  > Toilets & Tap, a free water & toilet finder, will instantly show you all free and available restroom and drinking fountains near you for when you really need it. This mobile-friendly web-based app does not require any download to make it easy for you to find what you need. Simply enter your location, or allow search nearby to see the closest options near you. See distance and time to walk from your location at a glance and click to get directions. Filter for accessible restrooms and even show free, private resources. Help keep our database up-to-date by adding new resources or editing existing records. With this app, relief is only a click away.
 
 ## Problem ##
   > Clean drinking water is essential for survival and having a place to relieve oneself is a basic necessity. When out traveling, it is often difficult to find both, especially without money.
@@ -32,13 +32,13 @@ Once the project moves into development, the press release can be used as a touc
   > This app will make it easy for all to find essential resources of water and bathrooms.
 
 ## Quote from You ##
-  > "Toilet & Tap is the instant relief we've all been waiting for."
+  > "Toilets & Tap is the instant relief we've all been waiting for."
 
 ## How to Get Started ##
-  > Go to sipandgo.com and enter your location
+  > Go to toiletsandtap.com and enter your location
 
 ## Customer Quote ##
-  > "I'm so thankful for Toilet & Tap. It was truly a life-saver when I was out traveling. It helped me find exactly what I needed when I was thirsty and when I needed to go. It's amazing that it's free!"
+  > "I'm so thankful for Toilets & Tap. It was truly a life-saver when I was out traveling. It helped me find exactly what I needed when I was thirsty and when I needed to go. It's amazing that it's free!"
 
 ## Closing and Call to Action ##
-  > Check out Toilet & Tap now to find free water and restrooms available near you!
+  > Check out Toilets & Tap now to find free water and restrooms available near you!

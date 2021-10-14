@@ -32,8 +32,6 @@ class AddForm extends React.Component {
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    // this.handleSelection = this.handleSelection(this);
-    // this.handleRating = this.handleRating(this);
   }
 
   // componentDidMount() {
@@ -50,27 +48,6 @@ class AddForm extends React.Component {
     });
   }
 
-  // handleSelection(event) {
-  //   if (event.target.value === 'private') {
-  //     this.setState({
-  //       publicOrPrivate: false,
-  //     })
-  //   } else {
-  //     this.setState({
-  //       publicOrPrivate: true,
-  //     })
-  //   }
-  // }
-
-  // handleRating(event) {
-  //   this.setState({
-  //     rating: event.target.value,
-  //   })
-  // }
-  // check for errors in form before submission
-  // Requires all input fields to have a value before a submission can be made.
-  // Performs input validation on the email address. (Email must be of form local@domain.)
-  // Upon submission, sends the RSVP data to your Express server.
   handleSubmit(event) {
 
     const { placeId, name,location, directions, hours, publicOrPrivate, isAccessible, male, female,
