@@ -129,8 +129,8 @@ class App extends React.Component {
         <>
         <div className="search-container"> Find...
         <div className="search">
-          <button id="toilets" onClick={this.toggleToilets}>Toilets</button>
-          <button id="water" onClick={this.toggleWater}>Water</button>
+          <button id={toilets ? "toilets-active" : "toilets-inactive"} onClick={this.toggleToilets}>Toilets</button>
+          <button id={water ? "water-active" : "water-inactive"} onClick={this.toggleWater}>Water</button>
         </div>
         {/* <div>
           <button id="go" onClick={() => this.getCurrentLocation()}>Search Near Me</button>
