@@ -1,13 +1,11 @@
-DROP DATABASE  toiletsandtap;
-CREATE DATABASE toiletsandtap;
-\c toiletsandtap;
+sqlite3 toiletsandtap.db;
 
 -- ---
 -- CREATE TABLES
 -- ---
 DROP TABLE toiletsandtap;
 CREATE TABLE toiletsandtap (
-  placeId varchar UNIQUE PRIMARY KEY,
+  placeId varchar,
   name text NOT NULL,
   location varchar NOT NULL,
   latitude varchar NOT NULL,

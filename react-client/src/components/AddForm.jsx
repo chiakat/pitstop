@@ -77,38 +77,37 @@ class AddForm extends React.Component {
         rating: rating,
         type: type,
       })
-        .then((response) => {
-          console.log('success')
-          console.log(response);
-          // clear states after successful submission
-          this.setState = {
-            placeId: '',
-            name: '',
-            location: '',
-            directions: '',
-            hours: '',
-            publicOrPrivate: true,
-            isAccessible: true,
-            male: true,
-            female: true,
-            hasChangingTable: false,
-            unisex: false,
-            isFree: true,
-            needKey: false,
-            isVerified: false,
-            rating: 0,
-            avg_rating: 0,
-            count_rating: 0,
-            type: 'toilet',
-          };
-          alert('Success! Thanks for your submission!');
-          // return to map
-          this.props.changeView('map');
+      .then((response) => {
+        console.log('success')
+        console.log(response);
+        // clear states after successful submission
+        this.setState({
+          placeId: '',
+          name: '',
+          directions: '',
+          hours: '',
+          publicOrPrivate: '',
+          isAccessible: false,
+          male: false,
+          female: false,
+          unisex: false,
+          isFree: false,
+          needKey: false,
+          isVerified: false,
+          hasToiletPaper: false,
+          hasSoap: false,
+          hasChangingTable: false,
+          rating: 0,
+          type: 'toilet',
         })
-        .catch((error) => {
-          console.log(error);
-          alert('Your request could not be completed. Please try again.');
-        })
+        alert('Success! Thanks for your submission!');
+        // return to map
+        this.props.changeView('map');
+      })
+      .catch((error) => {
+        console.log(error);
+        alert('Your request could not be completed. Please try again.');
+      })
     }
 
 

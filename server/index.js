@@ -12,29 +12,27 @@ app.use(express.static(__dirname + '/../react-client/dist'));
 // adds the new records to the database
 app.post('/addRecord', function(req, res) {
   console.log(req.body)
-  let { placeId, name, location, directions, hours, publicOrPrivate, isAccessible, male, female,
+  let { name, location, directions, hours, publicOrPrivate, isAccessible, male, female,
     hasChangingTable, hasToiletPaper, hasSoap, unisex, isFree, needKey, isVerified, rating, type } = req.body;
 
   let latitude = location.lat;
   let longitude = location.lng;
-
-  if (!placeId || placeId === '') {
-    placeId = type + latitude + longitude
-  }
+  let placeId = req.body.placeId === '' ? type + latitude + longitude : req.body.placeId;
 
   location = JSON.stringify(location)
+  console.log('placeId', placeId)
 
   let values = [placeId, name, location, latitude, longitude, directions, hours, publicOrPrivate, isAccessible, male, female, hasChangingTable, hasToiletPaper, hasSoap, unisex, isFree, needKey, isVerified, rating, type]
 
-  let insertQuery = 'INSERT INTO toiletsandtap VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  let insertQuery = 'INSERT or REPLACE INTO toiletsandtap VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
   db.run(insertQuery, values, (err) => {
     if (err) {
       console.error(err.message);
-      res.status(500).send(err);
+      return res.status(500).send(err);
     }
     console.log(`Success! A row has been inserted for ${name} ${type}`);
-    res.status(201).send();
+    return res.status(201).send();
   });
 });
 
