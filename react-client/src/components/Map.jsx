@@ -21,14 +21,12 @@ const Map = ({inputText, updateResults, currentLocation}) => {
     libraries: ["places"]
   });
 
-  // const sanFrancisco = {lat: 37.7749, lng: 122.4194};
+  // set options to center custom map around given location
   const mapOptions = {
     mapId: 'a121546c2907cd53',
     center: currentLocation ? currentLocation : inputLocation,
-    zoom: 16
+    zoom: 14
   };
-
-
 
   // converts address input to latitude and longitude and centers map
   const geocode = (request) => {
@@ -52,14 +50,13 @@ const Map = ({inputText, updateResults, currentLocation}) => {
   }
 
 
-  // // adds more places to the map
+  // adds markers to the map
   const addPlaces = (places, map) => {
     const placesList = document.getElementById("places");
 
     for (const place of places) {
       if (place.geometry && place.geometry.location) {
         const image = {
-         // url: place.icon,
           url: '/images/icons8-toilet-52 (dark).png',
           size: new google.maps.Size(52, 52),
           origin: new google.maps.Point(0, 0),
@@ -67,11 +64,37 @@ const Map = ({inputText, updateResults, currentLocation}) => {
           scaledSize: new google.maps.Size(30, 30),
         };
 
-        new google.maps.Marker({
+        const renderRatings = (place) => {
+          if (place.user_ratings_total > 0) {
+              return `⭐ ${place.rating} &#40;${place.user_ratings_total}&#41;`
+          }
+          return '';
+        }
+
+        const contentString =
+          `<h4>${place.name}</h4>
+          <div>Accessible  Open Now  Free</div>
+          <div>${place.formatted_address}</div>
+          <div>Status: ${place.business_status}</div>
+          <div>${renderRatings(place)}</div>`
+
+        const infowindow = new google.maps.InfoWindow({
+          content: contentString,
+        });
+
+        const marker = new google.maps.Marker({
           map: map,
           icon: image,
           title: place.name,
           position: place.geometry.location,
+        });
+
+        marker.addListener("click", () => {
+          infowindow.open({
+            anchor: marker,
+            map,
+            shouldFocus: false,
+          });
         });
 
         const li = document.createElement("li");
@@ -80,6 +103,7 @@ const Map = ({inputText, updateResults, currentLocation}) => {
     }
   }
 
+  // initiates the map using options and functions above
   const initMap = (currentLocation, address) => {
     loader.load()
       .then(() => {
@@ -90,6 +114,7 @@ const Map = ({inputText, updateResults, currentLocation}) => {
           map,
         });
 
+        // converts address to lat/lng required for nearby places search
         geocoder = new google.maps.Geocoder();
         geocoder
           .geocode({address: address} )
@@ -114,25 +139,26 @@ const Map = ({inputText, updateResults, currentLocation}) => {
             // Create the places service.
             const service = new google.maps.places.PlacesService(map);
 
-            // // Perform a text search.
-            // service.textSearch(
-            //   {location: response, radius: 100, query: "public restroom"},
+            // Perform a text search.
+            service.textSearch(
+              {location: response, radius: 500, query: "public restroom"},
+              (results, status, pagination) => {
+                if (status !== "OK" || !results) return;
+                addPlaces(results, map);
+                console.log('here are the results', results);
+                updateResults(results);
+
+            // Perform a nearby search.
+            // service.nearbySearch(
+            //   {location: response, radius: 1000, keyword: "restroom toilet"},
             //   (results, status, pagination) => {
             //     if (status !== "OK" || !results) return;
             //     addPlaces(results, map);
             //     console.log('here are the results', results);
             //     updateResults(results);
 
-            // Perform a nearby search.
-            service.nearbySearch(
-              {location: response, radius: 1000, keyword: "restroom toilet"},
-              (results, status, pagination) => {
-                if (status !== "OK" || !results) return;
-                addPlaces(results, map);
-                console.log('here are the results', results);
-                updateResults(results);
-              }
 
+              }
             );
           })
         })

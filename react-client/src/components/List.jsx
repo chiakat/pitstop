@@ -13,6 +13,13 @@ const List = ({results}) => {
     return null;
   }
 
+  // const renderPhoto = (place) => {
+  //   if (place.photos) {
+  //       return place.photos[0].html_attributions[0];
+  //   }
+  //   return null;
+  // }
+
   return (
     <>
     <div className="filters">
