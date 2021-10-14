@@ -35,7 +35,6 @@ const List = ({results}) => {
           <div>Address: {place.formatted_address}</div>
           <div>Status: {place.business_status}</div>
           {renderRatings(place)}
-          <div>{place.buiness_status}</div>
         </li>
       ))}
       </ul>

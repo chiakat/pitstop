@@ -3,7 +3,6 @@ import { Loader } from '@googlemaps/js-api-loader';
 import { GOOGLE_API_KEY } from '../../../server/config.js';
 import $ from 'jquery';
 
-
 const Map = ({inputText, updateResults, currentLocation}) => {
 
   let map;
@@ -27,28 +26,6 @@ const Map = ({inputText, updateResults, currentLocation}) => {
     center: currentLocation ? currentLocation : inputLocation,
     zoom: 14
   };
-
-  // converts address input to latitude and longitude and centers map
-  const geocode = (request) => {
-    geocoder
-      .geocode(request)
-      .then((result) => {
-        console.log(result)
-        const { results } = result;
-        inputLocation = results[0].geometry.location;
-        latitude = inputLocation.lat();
-        longitude = inputLocation.lng();
-        calcLocation = { lat: latitude, lng: longitude}
-        map.setCenter(inputLocation);
-        marker.setPosition(inputLocation);
-        marker.setMap(map);
-        return calcLocation;
-      })
-      .catch((e) => {
-        alert("Geocode was not successful for the following reason: " + e);
-      });
-  }
-
 
   // adds markers to the map
   const addPlaces = (places, map) => {
@@ -96,9 +73,7 @@ const Map = ({inputText, updateResults, currentLocation}) => {
             shouldFocus: false,
           });
         });
-
         const li = document.createElement("li");
-
       }
     }
   }
@@ -107,67 +82,89 @@ const Map = ({inputText, updateResults, currentLocation}) => {
   const initMap = (currentLocation, address) => {
     loader.load()
       .then(() => {
-        console.log('initMap was called', address)
         map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
         marker = new google.maps.Marker({
           map,
         });
 
-        // converts address to lat/lng required for nearby places search
-        geocoder = new google.maps.Geocoder();
-        geocoder
-          .geocode({address: address} )
+        if (currentLocation === '') {
+          // converts address to lat/lng required for nearby places search
+          geocoder = new google.maps.Geocoder();
+          geocoder
+          .geocode({address: address})
           .then((result) => {
-            console.log(result)
+            console.log('geocoding result:', result)
             const { results } = result;
             inputLocation = results[0].geometry.location;
             latitude = inputLocation.lat();
             longitude = inputLocation.lng();
-            console.log(latitude, longitude)
             calcLocation = { lat: latitude, lng: longitude}
             map.setCenter(inputLocation);
             marker.setPosition(inputLocation);
             marker.setMap(map);
-            if (currentLocation === '') {
-              return calcLocation;
-            }
-            return currentLocation;
+            return calcLocation;
           })
           .then((response) => {
             console.log(response)
-            // Create the places service.
-            const service = new google.maps.places.PlacesService(map);
-
-            // Perform a text search.
-            service.textSearch(
-              {location: response, radius: 500, query: "public restroom"},
-              (results, status, pagination) => {
-                if (status !== "OK" || !results) return;
-                addPlaces(results, map);
-                console.log('here are the results', results);
-                updateResults(results);
-
-            // Perform a nearby search.
-            // service.nearbySearch(
-            //   {location: response, radius: 1000, keyword: "restroom toilet"},
-            //   (results, status, pagination) => {
-            //     if (status !== "OK" || !results) return;
-            //     addPlaces(results, map);
-            //     console.log('here are the results', results);
-            //     updateResults(results);
-
-
-              }
-            );
+            searchMapByText(response)
           })
-        })
-
+          .catch((e) => {
+            alert("Geocode was not successful for the following reason: " + e);
+          });
+        } else {
+          map.setCenter(currentLocation);
+          marker.setPosition(currentLocation);
+          marker.setMap(map);
+          searchMapByText(currentLocation)
+        }
+      })
       .catch(e => {
         console.log(e);
         alert('Failed to load. Please try again.')
       })
+  }
+
+  // Perform a nearby search.
+  const searchNearby = (location) => {
+    loader.load().then((google) => {
+      const service = new google.maps.places.PlacesService(map);
+      service.nearbySearch(
+        {location: response, radius: 1000, keyword: "restroom toilet"},
+        (results, status, pagination) => {
+          if (status !== "OK" || !results) return;
+          addPlaces(results, map);
+          console.log('here are the results', results);
+          updateResults(results);
+        }
+      )
+    })
   };
+
+  // Perform a text search.
+  const searchMapByText = (location) => {
+    loader.load().then((google) => {
+      const service = new google.maps.places.PlacesService(map);
+      service.textSearch(
+        {location: location, radius: 500, query: "public restroom"},
+        (results, status, pagination) => {
+          if (status !== "OK" || !results) return;
+          addPlaces(results, map);
+          console.log('here are the results', results);
+          updateResults(results);
+        }
+      )
+    })
+  };
+
+
+  // };
+
+
+
+
+  if (inputText === '') {
+    inputText = 'San Francisco'
+  }
 
   useEffect(() => initMap(currentLocation, inputText), []);
 
