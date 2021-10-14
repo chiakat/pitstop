@@ -142,7 +142,7 @@ class App extends React.Component {
         <div className="nav">
           <span className="logo"
             onClick={() => this.changeView('home')}>
-            Home
+            Toilets &#38; Tap
           </span>
           <span className={this.state.view === 'map'
             ? 'nav-selected'

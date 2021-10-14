@@ -9,7 +9,6 @@ class AddForm extends React.Component {
     this.state = {
       placeId: '',
       name: '',
-      location: '',
       directions: '',
       hours: '',
       publicOrPrivate: '',
@@ -53,7 +52,7 @@ class AddForm extends React.Component {
     const { placeId, name,location, directions, hours, publicOrPrivate, isAccessible, male, female,
       hasChangingTable, hasToiletPaper, hasSoap, unisex, isFree, needKey, isVerified, rating, type } = this.state;
     event.preventDefault();
-    if (name === '' || location === '' || rating === 0) {
+    if (name === '' || rating === 0) {
       alert('Please provide a name and rating to submit.');
      }
       console.log('clicked')
@@ -61,7 +60,7 @@ class AddForm extends React.Component {
       axios.post('/addRecord', {
         placeId: placeId,
         name: name,
-        location: location,
+        location: this.props.newLocation,
         directions: directions,
         hours: hours,
         publicOrPrivate: publicOrPrivate,
@@ -102,7 +101,9 @@ class AddForm extends React.Component {
             count_rating: 0,
             type: 'toilet',
           };
-          alert('Success! Thanks for your RSVP!');
+          alert('Success! Thanks for your submission!');
+          // return to map
+          this.props.changeView('map');
         })
         .catch((error) => {
           console.log(error);

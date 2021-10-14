@@ -10,7 +10,7 @@ const Map = ({inputText, updateResults, toilets, water, changeView, getNewLocati
   let map;
   let marker;
   let geocoder;
-  let infowindow;
+  // let infowindow;
   let inputLocation;
   let latitude;
   let longitude;
@@ -21,6 +21,11 @@ const Map = ({inputText, updateResults, toilets, water, changeView, getNewLocati
   if (inputText === '') {
     inputText = 'San Francisco'
   }
+
+  if (newLocation !== '') {
+    currentLocation = newLocation;
+  }
+
 
   const [mapView, setMapView] = useState('readOnly')
   const [newLocation, setNewLocation] = useState('')
@@ -109,7 +114,7 @@ const Map = ({inputText, updateResults, toilets, water, changeView, getNewLocati
           <div>Status: ${place.business_status}</div>
           <div>${renderRatings(place)}</div>`
 
-        infowindow = new google.maps.InfoWindow({
+        let infowindow = new google.maps.InfoWindow({
           content: contentString,
         });
 
@@ -191,8 +196,7 @@ const Map = ({inputText, updateResults, toilets, water, changeView, getNewLocati
           setNewLocation(marker.getPosition());
 
           const infowindow = new google.maps.InfoWindow({
-            content: `<div>Click above to submit</div>
-            <p>Location: ${marker.getPosition()}</p>`
+            content: `<div>Click above to submit</div>`
           });
 
           infowindow.open({
