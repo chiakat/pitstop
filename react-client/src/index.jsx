@@ -109,9 +109,9 @@ class App extends React.Component {
   // }
 
   renderView() {
-    const { view, inputLocation, currentLocation, results } = this.state;
+    const { view, inputLocation, currentLocation, results, toilets, water } = this.state;
     if (view === 'map') {
-      return <Map changeView={this.changeView} updateResults={this.updateResults} inputText={inputLocation} currentLocation={currentLocation} />;
+      return <Map changeView={this.changeView} updateResults={this.updateResults} inputText={inputLocation} currentLocation={currentLocation} toilets={toilets} water={water} />;
     } else if (view === 'list') {
       return <List changeView={this.changeView} results={results} inputText={inputLocation} currentLocation={currentLocation} />;
     } else if (view === 'add') {
@@ -179,7 +179,7 @@ class App extends React.Component {
         <div className="footer">
           <a target="_blank" href="https://icons8.com/icon/2538/toilet"><FontAwesomeIcon icon={faToilet} />Toilet</a>,
           <a target="_blank" href="https://icons8.com/icon/CCbPUyD6avdx/water"><FontAwesomeIcon icon={faTint} /> Water</a>,
-          <a target="_blank" href="https://icons8.com/icon/85149/marker">Marker</a>, 
+          <a target="_blank" href="https://icons8.com/icon/85149/marker">Marker</a>,
           <a target="_blank" href="https://icons8.com/icon/10660/drinking-fountain"> Drinking Fountain </a>
            icons by
           <a target="_blank" href="https://icons8.com"> Icons8. </a>

@@ -5,7 +5,7 @@ import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import { GOOGLE_API_KEY } from '../../../server/config.js';
 import $ from 'jquery';
 
-const Map = ({inputText, updateResults}) => {
+const Map = ({inputText, updateResults, toilets, water, changeView}) => {
 
   let map;
   let marker;
@@ -16,6 +16,7 @@ const Map = ({inputText, updateResults}) => {
   let longitude;
   let calcLocation;
   let currentLocation;
+
 
   const [mapView, setMapView] = useState('readOnly')
   const [newLocation, setNewLocation] = useState('')
@@ -58,6 +59,16 @@ const Map = ({inputText, updateResults}) => {
     zoom: 14
   };
 
+  // get corresponding icon and keywords for toilet and water
+  let iconURL;
+  let keywords;
+  if (water) {
+    iconURL ='/images/icons8-water-64.png';
+    keywords ='drinking water';
+  } else {
+    iconURL ='/images/icons8-toilet-52 (dark).png';
+    keywords ='restroom toilet';
+  }
 
   // adds markers to the map
   const markPlaces = (places, map) => {
@@ -66,7 +77,7 @@ const Map = ({inputText, updateResults}) => {
     for (const place of places) {
       if (place.geometry && place.geometry.location) {
         const image = {
-          url: '/images/icons8-toilet-52 (dark).png',
+          url: iconURL,
           size: new google.maps.Size(52, 52),
           origin: new google.maps.Point(0, 0),
           anchor: new google.maps.Point(17, 34),
@@ -157,8 +168,9 @@ const Map = ({inputText, updateResults}) => {
           });
 
           const infowindow = new google.maps.InfoWindow({
-            content: `<div onClick=${(location) => addDetail(location)}>Click here to add more detail
-            </div>`
+            content: `<div onClick=${(location) => addDetail(location)}>
+            Click here to add more detail</div>
+            <p>Coordinates: ${marker.getPosition()}</p>`
           });
 
           infowindow.open({
@@ -219,7 +231,7 @@ const Map = ({inputText, updateResults}) => {
     loader.load().then((google) => {
       const service = new google.maps.places.PlacesService(map);
       service.nearbySearch(
-        {location: response, radius: 1000, keyword: "restroom toilet"},
+        {location: response, radius: 1000, keyword: keywords},
         (results, status, pagination) => {
           if (status !== "OK" || !results) return;
           markPlaces(results, map);
