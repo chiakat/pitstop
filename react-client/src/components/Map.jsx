@@ -11,53 +11,11 @@ const Map = ({inputText, updateResults, toilets, water, changeView}) => {
   let marker;
   let geocoder;
   let infoWindow;
-  let inputLocation;
-  let latitude;
-  let longitude;
+  // let inputLocation;
+  // let latitude;
+  // let longitude;
   let calcLocation;
   let currentLocation;
-
-
-  const [mapView, setMapView] = useState('readOnly')
-  const [newLocation, setNewLocation] = useState('')
-  const [address, saveAddress] = useState('')
-
-
-  // const [location, setLocation] = useState(inputLocation);
-  useEffect(()=>getCurrentLocation(), [navigator.geolocation])
-  // get current location
-  const getCurrentLocation = () => {
-    console.log('click')
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          console.log('position', position)
-          currentLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          }
-        }
-      );
-      console.log(currentLocation);
-    }
-   else {
-      alert('Please enable location services')
-    }
-  }
-
-  // call to use Google Maps API
-  const loader = new Loader({
-    apiKey: GOOGLE_API_KEY,
-    version: "weekly",
-    libraries: ["places"]
-  });
-
-  // set options to center custom map around given location
-  const mapOptions = {
-    mapId: 'a121546c2907cd53',
-    center: currentLocation ? currentLocation : inputLocation,
-    zoom: 14
-  };
 
   // get corresponding icon and keywords for toilet and water
   let iconURL;
@@ -70,8 +28,55 @@ const Map = ({inputText, updateResults, toilets, water, changeView}) => {
     keywords ='restroom toilet';
   }
 
+  const [mapView, setMapView] = useState('readOnly')
+  const [newLocation, setNewLocation] = useState('')
+  const [address, saveAddress] = useState('')
+
+  // call to use Google Maps API
+  const loader = new Loader({
+    apiKey: GOOGLE_API_KEY,
+    version: "weekly",
+    libraries: ["places"]
+  });
+
+  // useEffect((inputText)=>findLocation(inputText), [])
+  // useEffect(()=>getCurrentLocation(), [navigator.geolocation])
+  useEffect((inputText)=>initMap(inputText), [])
+
+
+
+
+
+  // get current location
+  const getCurrentLocation = () => {
+    console.log('finding current location')
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          console.log('position', position)
+          currentLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          }
+        }
+      );
+      return currentLocation;
+    }
+   else {
+      alert('Please enable location services')
+    }
+  }
+
+  // set options to center custom map around given location
+  const mapOptions = {
+    mapId: 'a121546c2907cd53',
+    center: calcLocation,
+    zoom: 14
+  };
+
+
   // adds markers to the map
-  const markPlaces = (places, map) => {
+  const renderMarkers = (places, map) => {
     const placesList = document.getElementById("places");
 
     for (const place of places) {
@@ -133,13 +138,58 @@ const Map = ({inputText, updateResults, toilets, water, changeView}) => {
   }
 
   // initiates the map using options and functions above
-  const initMap = (currentLocation, address) => {
+  const initMap = async (inputText) => {
+    // converts inputText to a valid lat/lng location to render map
     loader.load()
       .then(() => {
+        let result;
+        if (!inputText) {
+          inputText === 'San Francisco'
+        } else if (inputText === 'Use Current Location') {
+          result = getCurrentLocation();
+        } else {
+          // converts address to lat/lng required for nearby places search
+          geocoder = new google.maps.Geocoder();
+          geocoder
+          .geocode({address: inputText})
+          .then((result) => {
+            console.log('geocoding result:', result)
+            const { results } = result;
+            const inputLocation = results[0].geometry.location;
+            const latitude = inputLocation.lat();
+            const longitude = inputLocation.lng();
+            result = { lat: latitude, lng: longitude}
+            // map.setCenter(inputLocation);
+            // marker.setPosition(inputLocation);
+            // marker.setMap(map);
+            console.log('result', result);
+          })
+          .catch((e) => {
+            alert("Geocode was not successful for the following reason: " + e);
+          });
+        }
+        console.log('result', result);
+        return result;
+      })
+      // .then(() => {
+      //   const result = findLocation(inputText);
+      //   console.log(result)
+      //   return result
+      // })
+      .then((calcLocation) => {
+        console.log('attempt map setup', calcLocation)
         map = new google.maps.Map(document.getElementById('map'), mapOptions);
         marker = new google.maps.Marker({
           map,
         })
+
+        // center map to desired location
+        map.setCenter(calcLocation);
+        marker.setPosition(calcLocation);
+        marker.setMap(map);
+
+        // search for toilet/water near location
+        searchMapByText(calcLocation)
 
         // add event listener to add marker where map is clicked
         google.maps.event.addListener(map, 'click', (event) => {
@@ -181,6 +231,8 @@ const Map = ({inputText, updateResults, toilets, water, changeView}) => {
 
         }
 
+
+
         // // search based on current position
         // const locationButton = document.createElement("button");
         // locationButton.textContent = "Search Current Location";
@@ -188,37 +240,37 @@ const Map = ({inputText, updateResults, toilets, water, changeView}) => {
         // map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
         // locationButton.addEventListener("click", () => getCurrentLocation());
 
-        if (!currentLocation) {
-          // converts address to lat/lng required for nearby places search
-          geocoder = new google.maps.Geocoder();
-          geocoder
-          .geocode({address: address})
-          .then((result) => {
-            console.log('geocoding result:', result)
-            const { results } = result;
-            inputLocation = results[0].geometry.location;
-            latitude = inputLocation.lat();
-            longitude = inputLocation.lng();
-            calcLocation = { lat: latitude, lng: longitude}
-            map.setCenter(inputLocation);
-            marker.setPosition(inputLocation);
-            marker.setMap(map);
-            return calcLocation;
-          })
-          .then((response) => {
-            console.log(response)
-            searchMapByText(response)
-          })
-          .catch((e) => {
-            alert("Geocode was not successful for the following reason: " + e);
-          });
-        } else {
-          console.log('currentLocation', currentLocation)
-          map.setCenter(currentLocation);
-          marker.setPosition(currentLocation);
-          marker.setMap(map);
-          searchMapByText(currentLocation)
-        }
+        // if (inputText !== 'Use Current Location') {
+        //   // converts address to lat/lng required for nearby places search
+        //   geocoder = new google.maps.Geocoder();
+        //   geocoder
+        //   .geocode({address: address})
+        //   .then((result) => {
+        //     console.log('geocoding result:', result)
+        //     const { results } = result;
+        //     inputLocation = results[0].geometry.location;
+        //     latitude = inputLocation.lat();
+        //     longitude = inputLocation.lng();
+        //     calcLocation = { lat: latitude, lng: longitude}
+        //     map.setCenter(inputLocation);
+        //     marker.setPosition(inputLocation);
+        //     marker.setMap(map);
+        //     return calcLocation;
+        //   })
+        //   .then((response) => {
+        //     console.log(response)
+        //     searchMapByText(response)
+        //   })
+        //   .catch((e) => {
+        //     alert("Geocode was not successful for the following reason: " + e);
+        //   });
+        // } else {
+        //   console.log('currentLocation', currentLocation)
+        //   map.setCenter(currentLocation);
+        //   marker.setPosition(currentLocation);
+        //   marker.setMap(map);
+        //   searchMapByText(currentLocation)
+        // }
       })
       .catch(e => {
         console.log(e);
@@ -234,7 +286,7 @@ const Map = ({inputText, updateResults, toilets, water, changeView}) => {
         {location: response, radius: 1000, keyword: keywords},
         (results, status, pagination) => {
           if (status !== "OK" || !results) return;
-          markPlaces(results, map);
+          renderMarkers(results, map);
           console.log('here are the results', results);
           updateResults(results);
         }
@@ -250,7 +302,7 @@ const Map = ({inputText, updateResults, toilets, water, changeView}) => {
         {location: location, radius: 500, query: "public restroom"},
         (results, status, pagination) => {
           if (status !== "OK" || !results) return;
-          markPlaces(results, map);
+          renderMarkers(results, map);
           console.log('here are the results', results);
           updateResults(results);
         }
@@ -258,11 +310,7 @@ const Map = ({inputText, updateResults, toilets, water, changeView}) => {
     })
   };
 
-  if (inputText === '') {
-    inputText = 'San Francisco'
-  }
 
-  useEffect(() => initMap(currentLocation, inputText), [navigator.geolocation]);
 
   return (
     <>

@@ -130,13 +130,16 @@ class App extends React.Component {
         </div> */}
           <form onSubmit={(e) => this.handleSearch(e)}>
             <input
+              list='searchlist'
               type='search'
               id='search'
               placeholder='Enter a location...'
-              name='q'
               value={this.state.inputLocation}
               onChange={(e) => this.handleChange(e)}
             />
+            <datalist id='searchlist'>
+              <option value="Use Current Location">Use Current Location</option>
+            </datalist>
             <button id="go"><FontAwesomeIcon icon={faSearch} /></button>
           </form>
         </div>
