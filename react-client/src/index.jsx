@@ -129,13 +129,15 @@ class App extends React.Component {
         <>
         <div className="search-container"> Find...
         <div className="search">
-          <button id={toilets ? "toilets-active" : "toilets-inactive"} onClick={this.toggleToilets}>Toilets</button>
-          <button id={water ? "water-active" : "water-inactive"} onClick={this.toggleWater}>Water</button>
+          <button id={toilets ? "toilets-active" : "toilets-inactive"} onClick={this.toggleToilets}>
+            {/* <FontAwesomeIcon icon={faToilet} /> */}
+            Toilets
+          </button>
+          <button id={water ? "water-active" : "water-inactive"} onClick={this.toggleWater}>
+            {/* <FontAwesomeIcon icon={faTint} /> */}
+            Water
+          </button>
         </div>
-        {/* <div>
-          <button id="go" onClick={() => this.getCurrentLocation()}>Search Near Me</button>
-          <span>Enable Location Services to use current location</span>
-        </div> */}
           <form onSubmit={(e) => this.handleSearch(e)}>
             <input
               list='searchList'
@@ -158,7 +160,7 @@ class App extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="fullscreen">
         <div className="nav">
           <span className="logo"
             onClick={() => this.changeView('home')}>
@@ -188,8 +190,8 @@ class App extends React.Component {
           {this.renderView()}
         </div>
         <div className="footer">
-          <a target="_blank" href="https://icons8.com/icon/2538/toilet"><FontAwesomeIcon icon={faToilet} />Toilet</a>,
-          <a target="_blank" href="https://icons8.com/icon/CCbPUyD6avdx/water"><FontAwesomeIcon icon={faTint} /> Water</a>,
+          <a target="_blank" href="https://icons8.com/icon/2538/toilet">Toilet</a>,
+          <a target="_blank" href="https://icons8.com/icon/CCbPUyD6avdx/water">Water</a>,
           <a target="_blank" href="https://icons8.com/icon/85149/marker">Marker</a>,
           <a target="_blank" href="https://icons8.com/icon/10660/drinking-fountain"> Drinking Fountain </a>
            icons by
