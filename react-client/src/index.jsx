@@ -22,6 +22,7 @@ class App extends React.Component {
       toilets: true,
       water: false,
       results: [],
+      newLocation: '',
     };
 
     this.changeView = this.changeView.bind(this);
@@ -33,6 +34,7 @@ class App extends React.Component {
     this.toggleToilets = this.toggleToilets.bind(this);
     this.updateResults = this.updateResults.bind(this);
     // this.getCurrentLocation = this.getCurrentLocation(this);
+    this.getNewLocation = this.getNewLocation.bind(this);
   }
 
   componentDidMount() {
@@ -88,6 +90,12 @@ class App extends React.Component {
     })
   }
 
+  getNewLocation(location) {
+    this.setState({
+      newLocation: location,
+    })
+  }
+
   // // use current location
   // getCurrentLocation() {
   //   if (navigator.geolocation) {
@@ -109,13 +117,13 @@ class App extends React.Component {
   // }
 
   renderView() {
-    const { view, inputLocation, currentLocation, results, toilets, water } = this.state;
+    const { view, inputLocation, currentLocation, newLocation, results, toilets, water } = this.state;
     if (view === 'map') {
-      return <Map changeView={this.changeView} updateResults={this.updateResults} inputText={inputLocation} currentLocation={currentLocation} toilets={toilets} water={water} />;
+      return <Map changeView={this.changeView} updateResults={this.updateResults} getNewLocation={this.getNewLocation} inputText={inputLocation} currentLocation={currentLocation} toilets={toilets} water={water} />;
     } else if (view === 'list') {
       return <List changeView={this.changeView} results={results} inputText={inputLocation} currentLocation={currentLocation} />;
     } else if (view === 'add') {
-      return <AddForm changeView={this.changeView}/>;
+      return <AddForm changeView={this.changeView} newLocation={newLocation}/>;
     } else {
       return (
         <>
@@ -130,13 +138,16 @@ class App extends React.Component {
         </div> */}
           <form onSubmit={(e) => this.handleSearch(e)}>
             <input
+              list='searchList'
               type='search'
               id='search'
               placeholder='Enter a location...'
-              name='q'
               value={this.state.inputLocation}
               onChange={(e) => this.handleChange(e)}
             />
+            <datalist id='searchList'>
+              <option value="Use Current Location">Use Current Location</option>
+            </datalist>
             <button id="go"><FontAwesomeIcon icon={faSearch} /></button>
           </form>
         </div>

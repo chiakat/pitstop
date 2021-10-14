@@ -5,18 +5,22 @@ import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import { GOOGLE_API_KEY } from '../../../server/config.js';
 import $ from 'jquery';
 
-const Map = ({inputText, updateResults, toilets, water, changeView}) => {
+const Map = ({inputText, updateResults, toilets, water, changeView, getNewLocation}) => {
 
   let map;
   let marker;
   let geocoder;
-  let infoWindow;
+  let infowindow;
   let inputLocation;
   let latitude;
   let longitude;
   let calcLocation;
   let currentLocation;
 
+  // use SF as default map view if no location entered
+  if (inputText === '') {
+    inputText = 'San Francisco'
+  }
 
   const [mapView, setMapView] = useState('readOnly')
   const [newLocation, setNewLocation] = useState('')
@@ -24,24 +28,29 @@ const Map = ({inputText, updateResults, toilets, water, changeView}) => {
 
 
   // const [location, setLocation] = useState(inputLocation);
-  useEffect(()=>getCurrentLocation(), [navigator.geolocation])
+  useEffect(()=> getCurrentLocation(), [navigator.geolocation])
+  useEffect(() => initMap(currentLocation, inputText), [navigator.geolocation, mapView])
+  useEffect(() => getNewLocation(newLocation), [newLocation])
+
   // get current location
-  const getCurrentLocation = () => {
+  const getCurrentLocation = (inputText) => {
     console.log('click')
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          console.log('position', position)
-          currentLocation = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
+    if (inputText === 'Use Current Location') {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            console.log('position', position)
+            currentLocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            }
           }
-        }
-      );
-      console.log(currentLocation);
-    }
-   else {
-      alert('Please enable location services')
+        );
+        console.log(currentLocation);
+      }
+      else {
+        alert('Please enable location services')
+      }
     }
   }
 
@@ -70,8 +79,10 @@ const Map = ({inputText, updateResults, toilets, water, changeView}) => {
     keywords ='restroom toilet';
   }
 
+
+  let markers = [];
   // adds markers to the map
-  const markPlaces = (places, map) => {
+  const renderMarkers = (places, map) => {
     const placesList = document.getElementById("places");
 
     for (const place of places) {
@@ -98,7 +109,7 @@ const Map = ({inputText, updateResults, toilets, water, changeView}) => {
           <div>Status: ${place.business_status}</div>
           <div>${renderRatings(place)}</div>`
 
-        const infowindow = new google.maps.InfoWindow({
+        infowindow = new google.maps.InfoWindow({
           content: contentString,
         });
 
@@ -116,20 +127,22 @@ const Map = ({inputText, updateResults, toilets, water, changeView}) => {
             shouldFocus: false,
           });
         });
-        const li = document.createElement("li");
+
       }
     }
   }
 
   // finds the address of the location that was clicked and change to add Form view
   const addDetail = (location) => {
-    loader.load().then((google) => {
-      const geocoder = new google.maps.Geocoder();
-      geocoder
-      .geocode(location)
-      .then((address) =>
-      changeView('add'))
-    })
+    console.log('location', location)
+    changeView('add');
+    // console.log('submitted location', location)
+    // loader.load().then((google) => {
+    //   const geocoder = new google.maps.Geocoder();
+    //   geocoder
+    //   .geocode(location)
+    //   .then(() => changeView('add'))
+    // })
   }
 
   // initiates the map using options and functions above
@@ -141,14 +154,29 @@ const Map = ({inputText, updateResults, toilets, water, changeView}) => {
           map,
         })
 
+        // button to add more markers
+        const locationButton = document.createElement("button");
+        if (mapView === "readOnly") {
+          locationButton.textContent = "Add a new spot";
+          locationButton.addEventListener("click", () => setMapView('edit'));
+        } else if (mapView === "edit") {
+          locationButton.textContent = "Place a marker on the map, then click here to submit";
+          locationButton.addEventListener("click", () => addDetail(newLocation));
+          // locationButton.addEventListener("click", () => setMapView('submit'));
+        }
+        locationButton.classList.add("custom-map-control-button");
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+
         // add event listener to add marker where map is clicked
         google.maps.event.addListener(map, 'click', (event) => {
-          addMarker(event.latLng);
+          console.log('clicked any time', mapView)
+          if (mapView === 'edit') {
+            console.log('clicked with edit')
+            addMarker(event.latLng);
+          }
         });
 
         const addMarker = (location) => {
-          setNewLocation(location);
-          console.log('location of new marker', location)
           let newMarker = new google.maps.Marker({
             position: location,
             map,
@@ -167,10 +195,11 @@ const Map = ({inputText, updateResults, toilets, water, changeView}) => {
             title: "FontAwesome SVG Marker",
           });
 
+          setNewLocation(marker.getPosition());
+
           const infowindow = new google.maps.InfoWindow({
-            content: `<div onClick=${(location) => addDetail(location)}>
-            Click here to add more detail</div>
-            <p>Coordinates: ${marker.getPosition()}</p>`
+            content: `<div>Click above to submit</div>
+            <p>Location: ${marker.getPosition()}</p>`
           });
 
           infowindow.open({
@@ -234,7 +263,7 @@ const Map = ({inputText, updateResults, toilets, water, changeView}) => {
         {location: response, radius: 1000, keyword: keywords},
         (results, status, pagination) => {
           if (status !== "OK" || !results) return;
-          markPlaces(results, map);
+          renderMarkers(results, map);
           console.log('here are the results', results);
           updateResults(results);
         }
@@ -250,7 +279,7 @@ const Map = ({inputText, updateResults, toilets, water, changeView}) => {
         {location: location, radius: 500, query: "public restroom"},
         (results, status, pagination) => {
           if (status !== "OK" || !results) return;
-          markPlaces(results, map);
+          renderMarkers(results, map);
           console.log('here are the results', results);
           updateResults(results);
         }
@@ -258,15 +287,12 @@ const Map = ({inputText, updateResults, toilets, water, changeView}) => {
     })
   };
 
-  if (inputText === '') {
-    inputText = 'San Francisco'
-  }
 
-  useEffect(() => initMap(currentLocation, inputText), [navigator.geolocation]);
+
 
   return (
     <>
-    <div id="container">
+    <div className="map-container">
       <div id="map"></div>
     </div>
     </>
