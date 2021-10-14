@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import { GOOGLE_API_KEY } from '../../../server/config.js';
 import $ from 'jquery';
 
-const Map = ({inputText, updateResults, currentLocation}) => {
+const Map = ({inputText, updateResults}) => {
 
   let map;
   let marker;
@@ -13,7 +15,31 @@ const Map = ({inputText, updateResults, currentLocation}) => {
   let latitude;
   let longitude;
   let calcLocation;
+  let currentLocation;
 
+  // const [location, setLocation] = useState(inputLocation);
+  useEffect(()=>getCurrentLocation(), [navigator.geolocation])
+  // get current location
+  const getCurrentLocation = () => {
+    console.log('click')
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          console.log('position', position)
+          currentLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          }
+        }
+      );
+      console.log(currentLocation);
+    }
+   else {
+      alert('Please enable location services')
+    }
+  }
+
+  // call to use Google Maps API
   const loader = new Loader({
     apiKey: GOOGLE_API_KEY,
     version: "weekly",
@@ -27,8 +53,9 @@ const Map = ({inputText, updateResults, currentLocation}) => {
     zoom: 14
   };
 
+
   // adds markers to the map
-  const addPlaces = (places, map) => {
+  const markPlaces = (places, map) => {
     const placesList = document.getElementById("places");
 
     for (const place of places) {
@@ -85,9 +112,43 @@ const Map = ({inputText, updateResults, currentLocation}) => {
         map = new google.maps.Map(document.getElementById('map'), mapOptions);
         marker = new google.maps.Marker({
           map,
+        })
+
+        // add event listener to add marker where map is clicked
+        google.maps.event.addListener(map, 'click', (event) => {
+          addMarker(event.latLng);
         });
 
-        if (currentLocation === '') {
+        const addMarker = (location) => {
+          let marker = new google.maps.Marker({
+            position: location,
+            map,
+            icon: {
+              path:faMapMarkerAlt.icon[4],
+              fillColor: "#91DB22",
+              fillOpacity: 1,
+              anchor: new google.maps.Point(
+                faMapMarkerAlt.icon[0] / 2, // width
+                faMapMarkerAlt.icon[1] // height
+              ),
+              strokeWeight: 1,
+              strokeColor: "#ffffff",
+              scale: 0.075,
+            },
+            title: "FontAwesome SVG Marker",
+          });
+        }
+
+
+
+        // // search based on current position
+        // const locationButton = document.createElement("button");
+        // locationButton.textContent = "Search Current Location";
+        // locationButton.classList.add("custom-map-control-button");
+        // map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+        // locationButton.addEventListener("click", () => getCurrentLocation());
+
+        if (!currentLocation) {
           // converts address to lat/lng required for nearby places search
           geocoder = new google.maps.Geocoder();
           geocoder
@@ -112,6 +173,7 @@ const Map = ({inputText, updateResults, currentLocation}) => {
             alert("Geocode was not successful for the following reason: " + e);
           });
         } else {
+          console.log('currentLocation', currentLocation)
           map.setCenter(currentLocation);
           marker.setPosition(currentLocation);
           marker.setMap(map);
@@ -132,7 +194,7 @@ const Map = ({inputText, updateResults, currentLocation}) => {
         {location: response, radius: 1000, keyword: "restroom toilet"},
         (results, status, pagination) => {
           if (status !== "OK" || !results) return;
-          addPlaces(results, map);
+          markPlaces(results, map);
           console.log('here are the results', results);
           updateResults(results);
         }
@@ -148,7 +210,7 @@ const Map = ({inputText, updateResults, currentLocation}) => {
         {location: location, radius: 500, query: "public restroom"},
         (results, status, pagination) => {
           if (status !== "OK" || !results) return;
-          addPlaces(results, map);
+          markPlaces(results, map);
           console.log('here are the results', results);
           updateResults(results);
         }
@@ -156,17 +218,11 @@ const Map = ({inputText, updateResults, currentLocation}) => {
     })
   };
 
-
-  // };
-
-
-
-
   if (inputText === '') {
     inputText = 'San Francisco'
   }
 
-  useEffect(() => initMap(currentLocation, inputText), []);
+  useEffect(() => initMap(currentLocation, inputText), [navigator.geolocation]);
 
   return (
     <>

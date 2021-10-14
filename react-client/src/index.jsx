@@ -1,11 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTint, faToilet, faSearch} from '@fortawesome/free-solid-svg-icons';
 
 import AddMarker from './components/AddMarker.jsx';
 import List from './components/List.jsx';
 import Map from './components/Map.jsx';
 import AddForm from './components/AddForm.jsx';
+
+
 
 
 class App extends React.Component {
@@ -133,7 +137,7 @@ class App extends React.Component {
               value={this.state.inputLocation}
               onChange={(e) => this.handleChange(e)}
             />
-            <button id="go">Go!</button>
+            <button id="go"><FontAwesomeIcon icon={faSearch} /></button>
           </form>
         </div>
         </>
@@ -173,8 +177,9 @@ class App extends React.Component {
           {this.renderView()}
         </div>
         <div className="footer">
-          <a target="_blank" href="https://icons8.com/icon/2538/toilet">Toilet</a>,
-          <a target="_blank" href="https://icons8.com/icon/CCbPUyD6avdx/water"> Water</a>,
+          <a target="_blank" href="https://icons8.com/icon/2538/toilet"><FontAwesomeIcon icon={faToilet} />Toilet</a>,
+          <a target="_blank" href="https://icons8.com/icon/CCbPUyD6avdx/water"><FontAwesomeIcon icon={faTint} /> Water</a>,
+          <a target="_blank" href="https://icons8.com/icon/85149/marker">Marker</a>, 
           <a target="_blank" href="https://icons8.com/icon/10660/drinking-fountain"> Drinking Fountain </a>
            icons by
           <a target="_blank" href="https://icons8.com"> Icons8. </a>
