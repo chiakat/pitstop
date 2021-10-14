@@ -17,6 +17,11 @@ const Map = ({inputText, updateResults}) => {
   let calcLocation;
   let currentLocation;
 
+  const [mapView, setMapView] = useState('readOnly')
+  const [newLocation, setNewLocation] = useState('')
+  const [address, saveAddress] = useState('')
+
+
   // const [location, setLocation] = useState(inputLocation);
   useEffect(()=>getCurrentLocation(), [navigator.geolocation])
   // get current location
@@ -105,6 +110,17 @@ const Map = ({inputText, updateResults}) => {
     }
   }
 
+  // finds the address of the location that was clicked and change to add Form view
+  const addDetail = (location) => {
+    loader.load().then((google) => {
+      const geocoder = new google.maps.Geocoder();
+      geocoder
+      .geocode(location)
+      .then((address) =>
+      changeView('add'))
+    })
+  }
+
   // initiates the map using options and functions above
   const initMap = (currentLocation, address) => {
     loader.load()
@@ -120,7 +136,9 @@ const Map = ({inputText, updateResults}) => {
         });
 
         const addMarker = (location) => {
-          let marker = new google.maps.Marker({
+          setNewLocation(location);
+          console.log('location of new marker', location)
+          let newMarker = new google.maps.Marker({
             position: location,
             map,
             icon: {
@@ -137,9 +155,19 @@ const Map = ({inputText, updateResults}) => {
             },
             title: "FontAwesome SVG Marker",
           });
+
+          const infowindow = new google.maps.InfoWindow({
+            content: `<div onClick=${(location) => addDetail(location)}>Click here to add more detail
+            </div>`
+          });
+
+          infowindow.open({
+            anchor: newMarker,
+            map,
+            shouldFocus: true,
+          });
+
         }
-
-
 
         // // search based on current position
         // const locationButton = document.createElement("button");

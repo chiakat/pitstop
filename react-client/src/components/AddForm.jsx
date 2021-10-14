@@ -138,6 +138,15 @@ class AddForm extends React.Component {
     return (
         <form className='addForm' onSubmit={this.handleSubmit}>
           <label>
+            Add a new
+            <br />
+            <select name="type" type="string" onChange={this.handleInputChange}>
+              <option defaultValue="toilet">Toilet</option>
+              <option value='water'>Water</option>
+            </select>
+          </label>
+          <br />
+          <label>
             Name of Location:
             <input
               name="name"
