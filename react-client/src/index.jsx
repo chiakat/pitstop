@@ -167,14 +167,14 @@ class App extends React.Component {
         <div className="main">
           {this.renderView()}
         </div>
-        <div className="footer">
+        {/* <div className="footer">
           <a target="_blank" href="https://icons8.com/icon/2538/toilet">Toilet</a>,
           <a target="_blank" href="https://icons8.com/icon/CCbPUyD6avdx/water">Water</a>,
           <a target="_blank" href="https://icons8.com/icon/85149/marker">Marker</a>,
           <a target="_blank" href="https://icons8.com/icon/10660/drinking-fountain"> Drinking Fountain </a>
            icons by
           <a target="_blank" href="https://icons8.com"> Icons8. </a>
-        </div>
+        </div> */}
       </div>
     );
   }
