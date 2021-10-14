@@ -25,6 +25,7 @@ const List = ({results}) => {
       {results.map((place) => (
         <li key={place.place_id} onClick={handleClick}>
           <h4>{place.name}</h4>
+          <div>Address: {place.formatted_address}</div>
           <div>Status: {place.business_status}</div>
           {renderRatings(place)}
           <div>{place.buiness_status}</div>

@@ -13,7 +13,8 @@ class App extends React.Component {
     super();
     this.state = {
       view: 'home',
-      location: '',
+      currentLocation: '',
+      inputLocation: '',
       toilets: true,
       water: false,
       results: [],
@@ -27,6 +28,7 @@ class App extends React.Component {
     this.toggleWater = this.toggleWater.bind(this);
     this.toggleToilets = this.toggleToilets.bind(this);
     this.updateResults = this.updateResults.bind(this);
+    // this.getCurrentLocation = this.getCurrentLocation(this);
   }
 
   componentDidMount() {
@@ -47,14 +49,14 @@ class App extends React.Component {
 
   handleChange(e) {
     this.setState({
-      location: e.target.value,
+      inputLocation: e.target.value,
     })
   }
 
   handleSearch(e) {
     e.preventDefault();
-    console.log('Searching', this.state.location)
-    if (!this.state.location) {
+    console.log('Searching', this.state.inputLocation)
+    if (!this.state.inputLocation) {
       alert('Please enter a location');
     } else {
       this.changeView('map');
@@ -82,12 +84,32 @@ class App extends React.Component {
     })
   }
 
+  // // use current location
+  // getCurrentLocation() {
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         this.setState({
+  //           currentLocation: {
+  //             lat: position.coords.latitude,
+  //             lng: position.coords.longitude,
+  //           }
+  //         })
+  //       }
+  //     );
+  //   this.changeView('map');
+  //   }
+  //   else {
+  //     alert('Please enable location services')
+  //   }
+  // }
+
   renderView() {
-    const { view, location, results } = this.state;
+    const { view, inputLocation, currentLocation, results } = this.state;
     if (view === 'map') {
-      return <Map changeView={this.changeView} updateResults={this.updateResults} inputText={location} />;
+      return <Map changeView={this.changeView} updateResults={this.updateResults} inputText={inputLocation} currentLocation={currentLocation} />;
     } else if (view === 'list') {
-      return <List changeView={this.changeView} results={results} inputText={location} />;
+      return <List changeView={this.changeView} results={results} inputText={inputLocation} currentLocation={currentLocation} />;
     } else if (view === 'add') {
       return <AddForm changeView={this.changeView}/>;
     } else {
@@ -98,13 +120,17 @@ class App extends React.Component {
           <button id="toilets" onClick={this.toggleToilets}>Toilets</button>
           <button id="water" onClick={this.toggleWater}>Water</button>
         </div>
+        {/* <div>
+          <button id="go" onClick={() => this.getCurrentLocation()}>Search Near Me</button>
+          <span>Enable Location Services to use current location</span>
+        </div> */}
           <form onSubmit={(e) => this.handleSearch(e)}>
             <input
               type='search'
               id='search'
               placeholder='Enter a location...'
               name='q'
-              value={this.state.location}
+              value={this.state.inputLocation}
               onChange={(e) => this.handleChange(e)}
             />
             <button id="go">Go!</button>
