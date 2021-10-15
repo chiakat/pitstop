@@ -33,6 +33,7 @@ class App extends React.Component {
     this.updateResults = this.updateResults.bind(this);
     // this.getCurrentLocation = this.getCurrentLocation(this);
     this.getNewLocation = this.getNewLocation.bind(this);
+    this.renderNavBar = this.renderNavBar.bind(this);
   }
 
   componentDidMount() {
@@ -97,7 +98,10 @@ class App extends React.Component {
   renderView() {
     const { view, inputLocation, currentLocation, newLocation, results, toilets, water } = this.state;
     if (view === 'map') {
-      return <Map changeView={this.changeView} updateResults={this.updateResults} getNewLocation={this.getNewLocation} inputText={inputLocation} currentLocation={currentLocation} toilets={toilets} water={water} />;
+      this.renderNavBar()
+      return (
+        <Map changeView={this.changeView} updateResults={this.updateResults} getNewLocation={this.getNewLocation} inputText={inputLocation} currentLocation={currentLocation} toilets={toilets} water={water} />
+      );
     } else if (view === 'list') {
       return <List changeView={this.changeView} results={results} inputText={inputLocation} currentLocation={currentLocation} />;
     } else if (view === 'add') {
@@ -136,34 +140,48 @@ class App extends React.Component {
     }
   }
 
-  render() {
-    return (
-      <div className="fullscreen">
+  renderNavBar() {
+    const { view } = this.state;
+    if (view !== 'home') {
+      return (
         <div className="nav">
           <span className="logo"
             onClick={() => this.changeView('home')}>
-            Toilets &#38; Tap
+            Home
           </span>
-          <span className={this.state.view === 'map'
+          <span className={view === 'map'
             ? 'nav-selected'
             : 'nav-unselected'}
           onClick={() => this.changeView('map')}>
             Map
           </span>
-          <span className={this.state.view === 'list'
+          <span className={view === 'list'
             ? 'nav-selected'
             : 'nav-unselected'}
           onClick={() => this.changeView('list')}>
             List
           </span>
-          <span className={this.state.view === 'add'
+          <span className={view === 'add'
             ? 'nav-selected'
             : 'nav-unselected'}
           onClick={() => this.changeView('add')}>
             Add More
           </span>
         </div>
+      )
+    }
+    return (
+      <div className='header'>
+        <img id='logo' src='/images/toilettaplogo_white.png'></img>
+        <p>Toilets &#38; Tap</p>
+      </div>
+    )
+  }
 
+  render() {
+    return (
+      <div className="fullscreen">
+        {this.renderNavBar()}
         <div className="main">
           {this.renderView()}
         </div>
