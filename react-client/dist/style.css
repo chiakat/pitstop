@@ -1,0 +1,314 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap');
+
+/* Color Theme Swatches in Hex */
+.Travel-concept-with-airplane-shadow-and-beach-1-hex { color: #04ADBF; }
+.Travel-concept-with-airplane-shadow-and-beach-2-hex { color: #04BFBF; }
+.Travel-concept-with-airplane-shadow-and-beach-3-hex { color: #027373; }
+.Travel-concept-with-airplane-shadow-and-beach-4-hex { color: #aeff00; }
+.Travel-concept-with-airplane-shadow-and-beach-5-hex { color: #F2E0D0; }
+
+
+html, body {
+  font-family: 'Quicksand', sans-serif;
+  margin: 0px;
+  color: white;
+  background-color: #002a33;
+  font-size: min(max(2.3vh, 2.5vw), 35px);
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.fullScreen {
+  height: 100%;
+}
+
+.header {
+  display: flex;
+  width: 24vw;
+  align-content: center;
+  justify-content: center;
+  margin-left:38vw;
+  margin-right: 38vw;
+  font-size: min(4vh, 5vw);
+}
+
+#logo {
+  height: 8vh;
+  margin-top: 3vh;
+}
+/* Navigation Bar ----------------------------*/
+
+.main {
+  min-height: 82vh;
+  height: 100%;
+}
+
+.nav {
+  background-color: #04BFBF;
+  margin: 0px;
+  padding: max(.8vh, .8vw);
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  font-size: max(2vh, 1.8vw);
+}
+
+.nav-selected {
+  padding: 5px;
+  color: white;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.nav-unselected {
+  padding: 5px;
+  margin-right: 5px;
+}
+
+
+/* Home Page ------------------------------------*/
+button {
+  width: 100%;
+  padding: 2vh;
+  flex-grow: 0;
+  cursor: pointer;
+  font-size: min(max(3vh, 2.5vw), 40px);
+  border: none;
+  font-family: 'Quicksand', sans-serif;
+  color: #002a33;
+  background-color: #00e1ff;
+  border-radius: 1vh;
+  margin-bottom: 2vh;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+button:hover {
+  color: #141414;
+  background-color: #adadad;
+}
+
+button:disabled {
+  background-color: #9fc1ee;
+  color: #c5d4f0;
+  cursor: auto;
+}
+
+#toilets-inactive {
+  background-color: #adadad;
+}
+
+#water-inactive {
+  background-color: #adadad;
+}
+
+.search-container {
+  margin: auto;
+  margin-top: 10vh;
+  max-width: 700px;
+  width: 80%;
+  font-size: min(max(3.5vh, 2.5vw), 40px);
+}
+
+.search {
+  display: flex;
+  justify-content: space-between;
+}
+
+.search button {
+  width: 47.5%;
+  margin: 5% 0%;
+}
+
+#go:hover {
+  background-color: rgb(145, 219, 34);
+}
+
+input {
+  width: 100%;
+  padding: 2vh;
+  flex-grow: 0;
+  cursor: pointer;
+  font-size: min(max(2.5vh, 2vw), 40px);
+  border: none;
+  font-family: 'Quicksand', sans-serif;
+  border-radius: 1vh;
+  margin: 5% 0%;
+}
+
+.search-container input {
+  padding: 3vh;
+  font-size: min(max(2.5vh, 2vw), 40px);
+}
+
+/* Map ------------------------------------*/
+
+.map-container {
+  height: 100%;
+  display: flex;
+  color: black;
+}
+
+/* Always set the map height explicitly to define the size of the div
+* element that contains the map. */
+#map {
+  flex-basis: 0;
+  flex-grow: 4;
+  height: 100vh;
+  touch-action: none;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: bolder;
+  margin: 0px;
+  line-height: 1.1em;
+}
+
+.map-container button {
+  width: fit-content;
+  margin: max(1vh, 1vw);
+  font-size: min(max(2vh, 1.6vw), 35px);
+  border: 2px solid #04BFBF;
+  background-color: white;
+  padding: 1vh;
+}
+
+.map-container button:hover {
+  border: 2px solid white;
+  background-color: rgb(145, 219, 34);
+}
+
+/* Results ------------------------------------*/
+
+.filters {
+  display: flex;
+  justify-content: space-between;
+  width: 90%;
+  max-width: 700px;
+  margin: auto;
+}
+
+
+.filters button {
+  width: 30%;
+  margin: 3vh 0%;
+  font-size: min(max(1.8vh, 1.6vw), 35px);
+  padding: 1.2vh;
+}
+
+.results {
+  color: #002a33;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  margin: auto;
+  max-width: 700px;
+  width: 90%;
+  height: 90vh;
+  box-sizing: border-box;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.results h4 {
+  margin: 0;
+  margin-bottom: 2vh;
+}
+
+li {
+  background-color: #f1f1f1;
+  padding: max(1.5vh, 1.5vw);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  font-size: min(max(2vh, 1.6vw), 35px);
+  cursor: pointer;
+  margin-bottom: max(2vh, 2vw);
+  border-radius: 1vh;
+  border: none;
+}
+
+li:nth-child(odd) {
+  background-color: #fcfcfc;
+}
+
+
+/* Form ------------------------------------*/
+.addForm {
+  height: 100%;
+  width: 80%;
+  max-width: 700px;
+  margin: auto;
+  margin-top: 5%;
+  display: grid;
+}
+
+.addForm label {
+  width: 100%;
+}
+
+.addForm input {
+  margin: 1%;
+  margin-left: 0%;
+  padding: max(1.5vh, 1.5vw);
+  width: 92%;
+}
+
+.addForm select {
+  width: 50%;
+  padding: 1vh;
+  cursor: pointer;
+  font-size: min(max(2vh, 1.6vw), 35px);
+  border: none;
+  font-family: 'Quicksand', sans-serif;
+  color: #002a33;
+  border-radius: 1vh;
+  margin: 1%;
+  margin-left: 0;
+}
+
+.checkboxes {
+  margin-left: 1%;
+  display: inline-block;
+}
+
+.checkboxes input {
+  background-color: #fff;
+  border: 0;
+  border-radius: 2vh;
+  height: 3.7vh;
+  cursor: pointer;
+  margin: 1.5vh;
+  margin-top: .5vh;
+  width: 3.7vh;
+  vertical-align: middle;
+}
+
+:checked {
+  color: #04ADBF;
+}
+
+#submit:hover {
+  background-color: rgb(145, 219, 34);
+}
+
+
+/* Footer ------------------------------------*/
+.footer {
+  position: relative;
+  bottom: 0;
+  color: rgb(155, 155, 155);
+  font-size: max(1.2vh, 1vw);
+  margin-top: 1vh;
+  padding-left: 10px;
+  padding-bottom: 10px;
+}
+
+.footer a {
+  color: #17a1b1;
+  width: 100%;
+}
