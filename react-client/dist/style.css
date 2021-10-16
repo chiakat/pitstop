@@ -177,7 +177,11 @@ input {
   background-color: rgb(145, 219, 34);
 }
 
-/* Results ------------------------------------*/
+.map-container input {
+  width: 20vw;
+}
+
+/* Result List ------------------------------------*/
 
 .filters {
   display: flex;

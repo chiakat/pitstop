@@ -1,3 +1,5 @@
+/* eslint-disable no-loop-func */
+/* eslint-disable no-console */
 /* eslint-disable no-restricted-syntax */
 /* global google */
 import React, { useEffect, useState } from 'react';
@@ -5,7 +7,6 @@ import PropTypes from 'prop-types';
 import { Loader } from '@googlemaps/js-api-loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
-import $ from 'jquery';
 import { GOOGLE_API_KEY } from '../../../server/config.js';
 
 const Map = ({
@@ -33,10 +34,8 @@ const Map = ({
 
   const [mapView, setMapView] = useState('readOnly');
   const [newLocation, setNewLocation] = useState('');
+  const [searchLocation, setSearchLocation] = useState('');
 
-  useEffect(() => getCurrentLocation(), [navigator.geolocation]);
-  useEffect(() => initMap(currentLocation, inputText), [navigator.geolocation, mapView]);
-  useEffect(() => getNewLocation(newLocation), [newLocation]);
 
   // get current location
   const getCurrentLocation = (input) => {
@@ -56,8 +55,8 @@ const Map = ({
         return currentLocation;
       }
       alert('Please enable location services');
-      return null;
     }
+    return null;
   };
 
   // call to use Google Maps API
@@ -88,9 +87,7 @@ const Map = ({
 
   let markers = [];
   // adds markers to the map
-  const renderMarkers = (places, map) => {
-    const placesList = document.getElementById('places');
-
+  const renderMarkers = (places) => {
     for (const place of places) {
       if (place.geometry && place.geometry.location) {
         const image = {
@@ -101,39 +98,89 @@ const Map = ({
           scaledSize: new google.maps.Size(30, 30),
         };
 
-        const renderRatings = (place) => {
-          if (place.user_ratings_total > 0) {
-            return `⭐ ${place.rating} &#40;${place.user_ratings_total}&#41;`;
-          }
-          return '';
-        };
+        let placeDistance = '';
+        let placeDuration = '';
+        // get distance between the current location and result marker
+        const distService = new google.maps.DistanceMatrixService();
+        console.log('location submitted to distService', inputText);
+        distService.getDistanceMatrix(
+          {
+            origins: [inputText],
+            destinations: [place.geometry.location],
+            travelMode: 'WALKING',
+            unitSystem: google.maps.UnitSystem.IMPERIAL,
+            avoidHighways: true,
+            avoidTolls: true,
+          }, (response, status) => {
+            if (status !== 'OK' || !response) return;
+            console.log('here are the responses', response);
+            console.log('distance', response.rows[0].elements[0].distance.text);
+            console.log('duration', response.rows[0].elements[0].duration.text);
+            placeDistance = response.rows[0].elements[0].distance.text;
+            placeDuration = response.rows[0].elements[0].duration.text;
 
-        const contentString = `<h4>${place.name}</h4>
-          <div>Accessible  Open Now  Free</div>
-          <div>${place.formatted_address}</div>
-          <div>Status: ${place.business_status}</div>
-          <div>${renderRatings(place)}</div>`;
+            const renderRatings = () => {
+              if (place.user_ratings_total > 0) {
+                return `⭐ ${place.rating} &#40;${place.user_ratings_total}&#41;`;
+              }
+              return '';
+            };
 
-        const infowindow = new google.maps.InfoWindow({
-          content: contentString,
-        });
+            const contentString = `<h4>${place.name}</h4>
+              <div>Accessible  Open Now  Free</div>
+              <span>${placeDistance}</span>
+              <span>${placeDuration}</span>
+              <div>${place.formatted_address}</div>
+              <div>Status: ${place.business_status}</div>
+              <div>${renderRatings(place)}</div>`;
 
-        const marker = new google.maps.Marker({
-          map,
-          icon: image,
-          title: place.name,
-          position: place.geometry.location,
-        });
+            const infowindow = new google.maps.InfoWindow({
+              content: contentString,
+            });
 
-        marker.addListener('click', () => {
-          infowindow.open({
-            anchor: marker,
-            map,
-            shouldFocus: false,
-          });
-        });
+            const placeMarker = new google.maps.Marker({
+              map,
+              icon: image,
+              title: place.name,
+              position: place.geometry.location,
+            });
+
+            placeMarker.addListener('click', () => {
+              infowindow.open({
+                anchor: placeMarker,
+                map,
+                shouldFocus: false,
+              });
+            });
+
+            markers.push(placeMarker);
+          },
+        );
       }
     }
+  };
+
+  const clearMarkers = () => {
+    for (let i = 0; i < markers.length; i += 1) {
+      markers[i].setMap(null);
+    }
+    markers = [];
+  };
+
+  // Perform a text search.
+  const searchMapByText = (location) => {
+    loader.load().then((google) => {
+      const service = new google.maps.places.PlacesService(map);
+      service.textSearch(
+        { location, radius: 500, query: 'public restroom' },
+        (results, status, pagination) => {
+          if (status !== 'OK' || !results) return;
+          renderMarkers(results, map);
+          console.log('here are the results', results);
+          updateResults(results);
+        },
+      );
+    });
   };
 
   // finds the address of the location that was clicked and change to add Form view
@@ -144,26 +191,16 @@ const Map = ({
     changeView('add');
   };
 
-  const clearMarkers = () => {
-    for (let i = 0; i < markers.length; i += 1) {
-      markers[i].setMap(null);
-    }
-    markers = [];
-  };
-
   const getMoveData = () => {
     loader.load()
       .then(() => {
         clearMarkers();
-        console.log('center', map.getCenter());
-        const newCurrLocation = map.getCenter();
         searchMapByText(map.getCenter());
-        // showPlaces();
       });
   };
 
   // initiates the map using options and functions above
-  const initMap = (currentLocation, address) => {
+  const initMap = (address) => {
     loader.load()
       .then(() => {
         map = new google.maps.Map(document.getElementById('map'), mapOptions);
@@ -172,16 +209,16 @@ const Map = ({
         });
 
         // button to add more markers
-        const locationButton = document.createElement('button');
+        const addButton = document.createElement('button');
         if (mapView === 'readOnly') {
-          locationButton.textContent = 'Add a new spot';
-          locationButton.addEventListener('click', () => setMapView('edit'));
+          addButton.textContent = 'Add a new spot';
+          addButton.addEventListener('click', () => setMapView('edit'));
         } else if (mapView === 'edit') {
-          locationButton.textContent = 'Place a marker on the map, then click here to submit';
-          locationButton.addEventListener('click', () => addDetail());
+          addButton.textContent = 'Place a marker on the map, then click here to submit';
+          addButton.addEventListener('click', () => addDetail());
         }
-        locationButton.classList.add('custom-map-control-button');
-        map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+        addButton.classList.add('custom-map-control-button');
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(addButton);
 
         // add event listener to add marker where map is clicked
         google.maps.event.addListener(map, 'click', (event) => {
@@ -234,44 +271,68 @@ const Map = ({
           });
         };
 
-        // // search based on current position
-        // const locationButton = document.createElement("button");
-        // locationButton.textContent = "Search Current Location";
-        // locationButton.classList.add("custom-map-control-button");
-        // map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
-        // locationButton.addEventListener("click", () => getCurrentLocation());
+        // search based on location entered in search box
+        const searchBox = document.createElement("input");
+        searchBox.textContent = "Search Current Location";
+        searchBox.classList.add("custom-map-control-button");
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchBox);
+        searchBox.addEventListener("change", (e) => setSearchLocation(e.target.value));
+        searchBox.addEventListener("submit", (e) => setSearchLocation(e.target.value));
 
-        if (!currentLocation) {
-          // converts address to lat/lng required for nearby places search
-          geocoder = new google.maps.Geocoder();
-          geocoder
-            .geocode({ address })
-            .then((result) => {
-              console.log('geocoding result:', result);
-              const { results } = result;
-              inputLocation = results[0].geometry.location;
-              latitude = inputLocation.lat();
-              longitude = inputLocation.lng();
-              calcLatLng = { lat: latitude, lng: longitude };
-              map.setCenter(inputLocation);
-              marker.setPosition(inputLocation);
-              marker.setMap(map);
-              return calcLatLng;
-            })
-            .then((currentLatLng) => {
-              console.log('mycurrentlocation', currentLatLng);
-              searchMapByText(currentLatLng);
-            })
-            .catch((e) => {
-              alert(`Geocode was not successful for the following reason: ${e}`);
-            });
-        } else {
-          console.log('currentLocation', currentLocation);
-          map.setCenter(currentLocation);
-          marker.setPosition(currentLocation);
-          marker.setMap(map);
-          searchMapByText(currentLocation);
-        }
+        // create search box to submit request
+        const searchButton = document.createElement("button");
+        searchButton.textContext = "Search";
+        searchButton.classList.add("custom-map-control-button");
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchButton);
+        searchButton.addEventListener("click", () => renderResults(searchLocation));
+
+        // // Create the search box and link it to the UI element.
+        // const input = document.getElementById("pac-input");
+        // const searchBox = new google.maps.places.SearchBox(input);
+
+        // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+        // // Bias the SearchBox results towards current map's viewport.
+        // map.addListener("bounds_changed", () => {
+        //   searchBox.setBounds(map.getBounds());
+        // });
+
+
+        const renderResults = (searchText) => {
+          console.log('processing', searchText);
+          if (!currentLocation) {
+            // converts address to lat/lng required for nearby places search
+            geocoder = new google.maps.Geocoder();
+            geocoder
+              .geocode({ address: searchText })
+              .then((result) => {
+                console.log('geocoding result:', result);
+                const { results } = result;
+                inputLocation = results[0].geometry.location;
+                latitude = inputLocation.lat();
+                longitude = inputLocation.lng();
+                calcLatLng = { lat: latitude, lng: longitude };
+                map.setCenter(inputLocation);
+                marker.setPosition(inputLocation);
+                marker.setMap(map);
+                return calcLatLng;
+              })
+              .then((currentLatLng) => {
+                console.log('mycurrentlocation', currentLatLng);
+                searchMapByText(currentLatLng);
+              })
+              .catch((e) => {
+                alert(`Geocode was not successful for the following reason: ${e}`);
+              });
+          } else {
+            console.log('currentLocation', currentLocation);
+            map.setCenter(currentLocation);
+            marker.setPosition(currentLocation);
+            marker.setMap(map);
+            searchMapByText(currentLocation);
+          }
+        };
+
+        renderResults(address);
         // renders more search results as map is moved
         if (mapView === 'readOnly') {
           getMoveData();
@@ -300,21 +361,9 @@ const Map = ({
     });
   };
 
-  // Perform a text search.
-  const searchMapByText = (location) => {
-    loader.load().then((google) => {
-      const service = new google.maps.places.PlacesService(map);
-      service.textSearch(
-        { location, radius: 500, query: 'public restroom' },
-        (results, status, pagination) => {
-          if (status !== 'OK' || !results) return;
-          renderMarkers(results, map);
-          console.log('here are the results', results);
-          updateResults(results);
-        },
-      );
-    });
-  };
+  useEffect(() => getCurrentLocation(), [navigator.geolocation]);
+  useEffect(() => initMap(inputText), [navigator.geolocation, mapView]);
+  useEffect(() => getNewLocation(newLocation), [newLocation]);
 
   return (
     <>

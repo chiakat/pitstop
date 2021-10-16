@@ -57,61 +57,61 @@ class AddForm extends React.Component {
     event.preventDefault();
     if (name === '' || rating === 0) {
       alert('Please provide a name and rating to submit.');
-    }
-    console.log('clicked');
-    // send data with axios
-    axios.post('/addRecord', {
-      placeId,
-      name,
-      location: newLocation,
-      directions,
-      hours,
-      publicOrPrivate,
-      isAccessible,
-      male,
-      female,
-      hasToiletPaper,
-      hasSoap,
-      hasChangingTable,
-      unisex,
-      isFree,
-      needKey,
-      isVerified,
-      rating,
-      type,
-    })
-      .then((response) => {
-        const { changeView } = this.props;
-        console.log('success');
-        console.log(response);
-        // clear states after successful submission
-        this.setState({
-          placeId: '',
-          name: '',
-          directions: '',
-          hours: '',
-          publicOrPrivate: '',
-          isAccessible: false,
-          male: false,
-          female: false,
-          unisex: false,
-          isFree: false,
-          needKey: false,
-          isVerified: false,
-          hasToiletPaper: false,
-          hasSoap: false,
-          hasChangingTable: false,
-          rating: 0,
-          type: 'toilet',
-        });
-        alert('Success! Thanks for your submission!');
-        // return to map
-        changeView('map');
+    } else {
+      // send data with axios
+      axios.post('/addRecord', {
+        placeId,
+        name,
+        location: newLocation,
+        directions,
+        hours,
+        publicOrPrivate,
+        isAccessible,
+        male,
+        female,
+        hasToiletPaper,
+        hasSoap,
+        hasChangingTable,
+        unisex,
+        isFree,
+        needKey,
+        isVerified,
+        rating,
+        type,
       })
-      .catch((error) => {
-        console.log(error);
-        alert('Your request could not be completed. Please try again.');
-      });
+        .then((response) => {
+          const { changeView } = this.props;
+          console.log('success');
+          console.log(response);
+          // clear states after successful submission
+          this.setState({
+            placeId: '',
+            name: '',
+            directions: '',
+            hours: '',
+            publicOrPrivate: '',
+            isAccessible: false,
+            male: false,
+            female: false,
+            unisex: false,
+            isFree: false,
+            needKey: false,
+            isVerified: false,
+            hasToiletPaper: false,
+            hasSoap: false,
+            hasChangingTable: false,
+            rating: 0,
+            type: 'toilet',
+          });
+          alert('Success! Thanks for your submission!');
+          // return to map
+          changeView('map');
+        })
+        .catch((error) => {
+          console.log(error);
+          alert('Your request could not be completed. Please try again.');
+        });
+    }
   }
 
   render() {
@@ -240,5 +240,13 @@ class AddForm extends React.Component {
     );
   }
 }
+
+AddForm.propTypes = {
+  changeView: PropTypes.func.isRequired,
+  newLocation: PropTypes.shape({
+    lat: PropTypes.number,
+    lng: PropTypes.number,
+  }).isRequired,
+};
 
 export default AddForm;
