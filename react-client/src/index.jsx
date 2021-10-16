@@ -71,11 +71,17 @@ class App extends React.Component {
   }
 
   toggleToilets() {
-    this.setState((prevState) => ({ toilets: !prevState }));
+    const { toilets } = this.state;
+    this.setState({
+      toilets: !toilets,
+    });
   }
 
   toggleWater() {
-    this.setState((prevState) => ({ water: !prevState }));
+    const { water } = this.state;
+    this.setState({
+      water: !water,
+    });
   }
 
   changeView(option) {
