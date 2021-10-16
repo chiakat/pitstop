@@ -1,12 +1,11 @@
 const sqlite3 = require('sqlite3').verbose();
 
-let db = new sqlite3.Database('./toiletsandtap.db', (err) => {
+const db = new sqlite3.Database('./toiletsandtap.db', (err) => {
   if (err) {
     return console.error(err.message);
   }
-  console.log('Connected to the Toilets and Tap SQlite database.');
+  return console.log('Connected to the Toilets and Tap SQlite database.');
 });
-
 
 // db.close((err) => {
 //   if (err) {

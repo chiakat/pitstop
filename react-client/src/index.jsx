@@ -1,14 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import $ from 'jquery';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTint, faToilet, faSearch} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTint, faToilet, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 import AddMarker from './components/AddMarker.jsx';
 import List from './components/List.jsx';
 import Map from './components/Map.jsx';
 import AddForm from './components/AddForm.jsx';
-
 
 class App extends React.Component {
   constructor() {
@@ -26,7 +25,6 @@ class App extends React.Component {
 
     this.changeView = this.changeView.bind(this);
     this.renderView = this.renderView.bind(this);
-    this.handleClick = this.handleClick.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.toggleWater = this.toggleWater.bind(this);
@@ -45,24 +43,24 @@ class App extends React.Component {
   toggleToilets() {
     this.setState({
       toilets: !this.state.toilets,
-    })
+    });
   }
 
   toggleWater() {
     this.setState({
       water: !this.state.water,
-    })
+    });
   }
 
   handleChange(e) {
     this.setState({
       inputLocation: e.target.value,
-    })
+    });
   }
 
   handleSearch(e) {
     e.preventDefault();
-    console.log('Searching', this.state.inputLocation)
+    console.log('Searching', this.state.inputLocation);
     if (!this.state.inputLocation) {
       alert('Please enter a location');
     } else {
@@ -72,82 +70,102 @@ class App extends React.Component {
 
   changeView(option) {
     this.setState({
-      view: option
-    });
-  }
-
-  // changes the featured post to the item that was clicked
-  // by setting state to the id of the post
-  handleClick(target, e) {
-    this.changeView('');
-    this.setState({
-      selectedItem: target,
+      view: option,
     });
   }
 
   updateResults(searchResults) {
     this.setState({
       results: searchResults,
-    })
+    });
   }
 
   getNewLocation(location) {
     this.setState({
       newLocation: location,
-    })
+    });
   }
 
   getNewLocationInfo(info) {
     this.setState({
       newLocationInfo: info,
-    })
+    });
   }
 
   renderView() {
-    const { view, inputLocation, currentLocation, newLocation, newLocationInfo, results, toilets, water } = this.state;
+    const {
+      view, inputLocation, currentLocation, newLocation, newLocationInfo, results, toilets, water,
+    } = this.state;
     if (view === 'map') {
-      this.renderNavBar()
+      this.renderNavBar();
       return (
-        <Map changeView={this.changeView} updateResults={this.updateResults}
-          getNewLocation={this.getNewLocation} getNewLocationInfo={this.getNewLocationInfo}
-          inputText={inputLocation} currentLocation={currentLocation} toilets={toilets} water={water} />
+        <Map
+          changeView={this.changeView}
+          updateResults={this.updateResults}
+          getNewLocation={this.getNewLocation}
+          getNewLocationInfo={this.getNewLocationInfo}
+          inputText={inputLocation}
+          currentLocation={currentLocation}
+          toilets={toilets}
+          water={water}
+        />
       );
-    } else if (view === 'list') {
-      return <List changeView={this.changeView} results={results} inputText={inputLocation} currentLocation={currentLocation} />;
-    } else if (view === 'add') {
-      return <AddForm changeView={this.changeView} newLocation={newLocation} newLocationInfo={newLocationInfo}/>;
-    } else {
+    } if (view === 'list') {
       return (
-        <>
-        <div className="search-container"> Find...
-        <div className="search">
-          <button id={toilets ? "toilets-active" : "toilets-inactive"} onClick={this.toggleToilets}>
-            {/* <FontAwesomeIcon icon={faToilet} /> */}
-            Toilets
-          </button>
-          <button id={water ? "water-active" : "water-inactive"} onClick={this.toggleWater}>
-            {/* <FontAwesomeIcon icon={faTint} /> */}
-            Water
-          </button>
-        </div>
+        <List
+          changeView={this.changeView}
+          results={results}
+          inputText={inputLocation}
+          currentLocation={currentLocation}
+        />
+      );
+    } if (view === 'add') {
+      return (
+        <AddForm
+          changeView={this.changeView}
+          newLocation={newLocation}
+          newLocationInfo={newLocationInfo}
+        />
+      );
+    }
+    return (
+      <>
+        <div className="search-container">
+          {' '}
+          Find...
+          <div className="search">
+            <button
+              id={toilets ? 'toilets-active' : 'toilets-inactive'}
+              onClick={this.toggleToilets}
+            >
+              {/* <FontAwesomeIcon icon={faToilet} /> */}
+              Toilets
+            </button>
+            <button
+              id={water ? 'water-active' : 'water-inactive'}
+              onClick={this.toggleWater}
+            >
+              {/* <FontAwesomeIcon icon={faTint} /> */}
+              Water
+            </button>
+          </div>
           <form onSubmit={(e) => this.handleSearch(e)}>
             <input
-              list='searchList'
-              type='search'
-              id='search'
-              placeholder='Enter a location...'
+              list="searchList"
+              type="search"
+              id="search"
+              placeholder="Enter a location..."
               value={this.state.inputLocation}
               onChange={(e) => this.handleChange(e)}
             />
-            <datalist id='searchList'>
+            <datalist id="searchList">
               <option value="Use Current Location">Use Current Location</option>
             </datalist>
             <button id="go"><FontAwesomeIcon icon={faSearch} /></button>
           </form>
         </div>
-        </>
-      )
-    }
+      </>
+    );
   }
 
   renderNavBar() {
@@ -155,37 +173,45 @@ class App extends React.Component {
     if (view !== 'home') {
       return (
         <div className="nav">
-          <span className="logo"
-            onClick={() => this.changeView('home')}>
+          <span
+            className="logo"
+            onClick={() => this.changeView('home')}
+          >
             Home
           </span>
-          <span className={view === 'map'
-            ? 'nav-selected'
-            : 'nav-unselected'}
-          onClick={() => this.changeView('map')}>
+          <span
+            className={view === 'map'
+              ? 'nav-selected'
+              : 'nav-unselected'}
+            onClick={() => this.changeView('map')}
+          >
             Map
           </span>
-          <span className={view === 'list'
-            ? 'nav-selected'
-            : 'nav-unselected'}
-          onClick={() => this.changeView('list')}>
+          <span
+            className={view === 'list'
+              ? 'nav-selected'
+              : 'nav-unselected'}
+            onClick={() => this.changeView('list')}
+          >
             List
           </span>
-          <span className={view === 'add'
-            ? 'nav-selected'
-            : 'nav-unselected'}
-          onClick={() => this.changeView('add')}>
+          <span
+            className={view === 'add'
+              ? 'nav-selected'
+              : 'nav-unselected'}
+            onClick={() => this.changeView('add')}
+          >
             Add More
           </span>
         </div>
-      )
+      );
     }
     return (
-      <div className='header'>
-        <img id='logo' src='/images/toilettaplogo_white.png'></img>
+      <div className="header">
+        <img id="logo" alt="toilet and tap logo" src="/images/toilettaplogo_white.png" />
         <p>Toilets &#38; Tap</p>
       </div>
-    )
+    );
   }
 
   render() {

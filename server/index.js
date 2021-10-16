@@ -6,25 +6,28 @@ const PORT = 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + '/../react-client/dist'));
-
+app.use(express.static(`${__dirname}/../react-client/dist`));
 
 // adds the new records to the database
-app.post('/addRecord', function(req, res) {
-  console.log(req.body)
-  let { name, location, directions, hours, publicOrPrivate, isAccessible, male, female,
-    hasChangingTable, hasToiletPaper, hasSoap, unisex, isFree, needKey, isVerified, rating, type } = req.body;
+app.post('/addRecord', (req, res) => {
+  console.log(req.body);
+  const {
+    name, directions, hours, publicOrPrivate, isAccessible, male, female,
+    hasChangingTable, hasToiletPaper, hasSoap, unisex, isFree, needKey, isVerified, rating, type,
+  } = req.body;
 
-  let latitude = location.lat;
-  let longitude = location.lng;
-  let placeId = req.body.placeId === '' ? type + latitude + longitude : req.body.placeId;
+  let { location, placeId } = req.body;
+  const latitude = location.lat;
+  const longitude = location.lng;
+  placeId = placeId === '' ? type + latitude + longitude : placeId;
+  location = JSON.stringify(location);
+  console.log('placeId', placeId);
 
-  location = JSON.stringify(location)
-  console.log('placeId', placeId)
+  const values = [placeId, name, location, latitude, longitude,
+    directions, hours, publicOrPrivate, isAccessible, male, female,
+    hasChangingTable, hasToiletPaper, hasSoap, unisex, isFree, needKey, isVerified, rating, type];
 
-  let values = [placeId, name, location, latitude, longitude, directions, hours, publicOrPrivate, isAccessible, male, female, hasChangingTable, hasToiletPaper, hasSoap, unisex, isFree, needKey, isVerified, rating, type]
-
-  let insertQuery = 'INSERT or REPLACE INTO toiletsandtap VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const insertQuery = 'INSERT or REPLACE INTO toiletsandtap VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
   db.run(insertQuery, values, (err) => {
     if (err) {
@@ -37,15 +40,12 @@ app.post('/addRecord', function(req, res) {
 });
 
 // gets all toilet and water fountain data
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
 });
-
 
 // updates existing records
-app.patch('/', function(req, res) {
+app.patch('/', (req, res) => {
 });
-
-
 
 app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
