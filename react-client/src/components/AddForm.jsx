@@ -1,6 +1,8 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 import $ from 'jquery';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 class AddForm extends React.Component {
   constructor(props) {
@@ -233,7 +235,7 @@ class AddForm extends React.Component {
           <br />
         </div>
         <br />
-        <button id="submit" onSubmit={this.handleSubmit}>Submit</button>
+        <button type="submit" id="submit" onSubmit={this.handleSubmit}>Submit</button>
       </form>
     );
   }

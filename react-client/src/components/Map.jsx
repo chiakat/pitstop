@@ -1,5 +1,7 @@
 /* eslint-disable no-restricted-syntax */
+/* global google */
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { Loader } from '@googlemaps/js-api-loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
@@ -21,9 +23,9 @@ const Map = ({
 
   // my current location: (33.889390, -117.964080)
   // use SF as default map view if no location entered
-  if (inputText === '') {
-    inputText = 'San Francisco';
-  }
+  // if (inputText === '') {
+  //   inputText = 'San Francisco';
+  // }
 
   if (newLocation !== '') {
     currentLocation = newLocation;
@@ -37,9 +39,9 @@ const Map = ({
   useEffect(() => getNewLocation(newLocation), [newLocation]);
 
   // get current location
-  const getCurrentLocation = (inputText) => {
+  const getCurrentLocation = (input) => {
     console.log('click');
-    if (inputText === 'Use Current Location') {
+    if (input === 'Use Current Location') {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -51,9 +53,10 @@ const Map = ({
           },
         );
         console.log(currentLocation);
-      } else {
-        alert('Please enable location services');
+        return currentLocation;
       }
+      alert('Please enable location services');
+      return null;
     }
   };
 
@@ -83,7 +86,7 @@ const Map = ({
     keywords = 'restroom toilet';
   }
 
-  const markers = [];
+  let markers = [];
   // adds markers to the map
   const renderMarkers = (places, map) => {
     const placesList = document.getElementById('places');
@@ -139,6 +142,24 @@ const Map = ({
     // converts address to lat/lng required for nearby places search
     console.log('newLocation', newLocation);
     changeView('add');
+  };
+
+  const clearMarkers = () => {
+    for (let i = 0; i < markers.length; i += 1) {
+      markers[i].setMap(null);
+    }
+    markers = [];
+  };
+
+  const getMoveData = () => {
+    loader.load()
+      .then(() => {
+        clearMarkers();
+        console.log('center', map.getCenter());
+        const newCurrLocation = map.getCenter();
+        searchMapByText(map.getCenter());
+        // showPlaces();
+      });
   };
 
   // initiates the map using options and functions above
@@ -251,6 +272,11 @@ const Map = ({
           marker.setMap(map);
           searchMapByText(currentLocation);
         }
+        // renders more search results as map is moved
+        if (mapView === 'readOnly') {
+          getMoveData();
+          google.maps.event.addListener(map, 'dragend', getMoveData);
+        }
       })
       .catch((e) => {
         console.log(e);
@@ -297,6 +323,19 @@ const Map = ({
       </div>
     </>
   );
+};
+
+Map.propTypes = {
+  inputText: PropTypes.string,
+  updateResults: PropTypes.func.isRequired,
+  water: PropTypes.bool.isRequired,
+  changeView: PropTypes.func.isRequired,
+  getNewLocation: PropTypes.func.isRequired,
+  getNewLocationInfo: PropTypes.func.isRequired,
+};
+
+Map.defaultProps = {
+  inputText: 'San Francisco',
 };
 
 export default Map;
