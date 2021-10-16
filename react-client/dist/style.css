@@ -14,7 +14,7 @@ html, body {
   margin: 0px;
   color: white;
   background-color: #002a33;
-  font-size: min(max(2.3vh, 2.5vw), 35px);
+  font-size: min(max(2.3vh, 2.5vw), 30px);
   height: 100%;
   margin: 0;
   padding: 0;
@@ -52,7 +52,7 @@ html, body {
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-  font-size: max(2vh, 1.8vw);
+  font-size: min(max(2vh, 1.8vw), 30px);
 }
 
 .nav-selected {
@@ -74,7 +74,7 @@ button {
   padding: 2vh;
   flex-grow: 0;
   cursor: pointer;
-  font-size: min(max(3vh, 2.5vw), 40px);
+  font-size: min(max(3vh, 2.5vw), 35px);
   border: none;
   font-family: 'Quicksand', sans-serif;
   color: #002a33;
@@ -108,7 +108,7 @@ button:disabled {
   margin-top: 10vh;
   max-width: 700px;
   width: 80%;
-  font-size: min(max(3.5vh, 2.5vw), 40px);
+  font-size: min(max(3.5vh, 2.5vw), 35px);
 }
 
 .search {
@@ -130,7 +130,7 @@ input {
   padding: 2vh;
   flex-grow: 0;
   cursor: pointer;
-  font-size: min(max(2.5vh, 2vw), 40px);
+  font-size: min(max(2.5vh, 2vw), 35px);
   border: none;
   font-family: 'Quicksand', sans-serif;
   border-radius: 1vh;
@@ -139,7 +139,7 @@ input {
 
 .search-container input {
   padding: 3vh;
-  font-size: min(max(2.5vh, 2vw), 40px);
+  font-size: min(max(2.5vh, 2vw), 35px);
 }
 
 /* Map ------------------------------------*/
@@ -166,8 +166,8 @@ input {
 .map-container button {
   width: fit-content;
   margin: max(1vh, 1vw);
-  font-size: min(max(2vh, 1.6vw), 35px);
-  border: 2px solid #04BFBF;
+  font-size: min(max(2vh, 1.6vw), 30px);
+  border: 2px solid #00e1ff;
   background-color: white;
   padding: 1vh;
 }
@@ -191,7 +191,7 @@ input {
 .filters button {
   width: 30%;
   margin: 3vh 0%;
-  font-size: min(max(1.8vh, 1.6vw), 35px);
+  font-size: min(max(1.8vh, 1.6vw), 30px);
   padding: 1.2vh;
 }
 
@@ -225,7 +225,7 @@ li {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  font-size: min(max(2vh, 1.6vw), 35px);
+  font-size: min(max(2vh, 1.6vw), 30px);
   cursor: pointer;
   margin-bottom: max(2vh, 2vw);
   border-radius: 1vh;
@@ -262,7 +262,7 @@ li:nth-child(odd) {
   width: 50%;
   padding: 1vh;
   cursor: pointer;
-  font-size: min(max(2vh, 1.6vw), 35px);
+  font-size: min(max(2vh, 1.6vw), 30px);
   border: none;
   font-family: 'Quicksand', sans-serif;
   color: #002a33;
@@ -302,7 +302,7 @@ li:nth-child(odd) {
   position: relative;
   bottom: 0;
   color: rgb(155, 155, 155);
-  font-size: max(1.2vh, 1vw);
+  font-size: min(max(1.2vh, 1vw), 12px);
   margin-top: 1vh;
   padding-left: 10px;
   padding-bottom: 10px;

@@ -5,7 +5,7 @@ import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import { GOOGLE_API_KEY } from '../../../server/config.js';
 import $ from 'jquery';
 
-const Map = ({inputText, updateResults, toilets, water, changeView, getNewLocation}) => {
+const Map = ({inputText, updateResults, toilets, water, changeView, getNewLocation, getNewLocationInfo}) => {
 
   let map;
   let marker;
@@ -27,15 +27,16 @@ const Map = ({inputText, updateResults, toilets, water, changeView, getNewLocati
   }
 
 
-  const [mapView, setMapView] = useState('readOnly')
-  const [newLocation, setNewLocation] = useState('')
-  const [address, saveAddress] = useState('')
+  const [mapView, setMapView] = useState('readOnly');
+  const [newLocation, setNewLocation] = useState('');
+  const [address, saveAddress] = useState('');
 
 
   // const [location, setLocation] = useState(inputLocation);
   useEffect(()=> getCurrentLocation(), [navigator.geolocation])
   useEffect(() => initMap(currentLocation, inputText), [navigator.geolocation, mapView])
   useEffect(() => getNewLocation(newLocation), [newLocation])
+
 
   // get current location
   const getCurrentLocation = (inputText) => {
@@ -70,7 +71,8 @@ const Map = ({inputText, updateResults, toilets, water, changeView, getNewLocati
   const mapOptions = {
     mapId: 'a121546c2907cd53',
     center: currentLocation ? currentLocation : inputLocation,
-    zoom: 14
+    zoom: 14,
+    mapTypeControl: false,
   };
 
   // get corresponding icon and keywords for toilet and water
@@ -138,8 +140,10 @@ const Map = ({inputText, updateResults, toilets, water, changeView, getNewLocati
   }
 
   // finds the address of the location that was clicked and change to add Form view
-  const addDetail = (location) => {
-    console.log('location', location)
+  const addDetail = () => {
+    // gets details about the new location (i.e. address, ratings) from google
+    // converts address to lat/lng required for nearby places search
+    console.log('newLocation', newLocation)
     changeView('add');
   }
 
@@ -159,8 +163,7 @@ const Map = ({inputText, updateResults, toilets, water, changeView, getNewLocati
           locationButton.addEventListener("click", () => setMapView('edit'));
         } else if (mapView === "edit") {
           locationButton.textContent = "Place a marker on the map, then click here to submit";
-          locationButton.addEventListener("click", () => addDetail(newLocation));
-          // locationButton.addEventListener("click", () => setMapView('submit'));
+          locationButton.addEventListener("click", () => addDetail());
         }
         locationButton.classList.add("custom-map-control-button");
         map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
@@ -194,9 +197,19 @@ const Map = ({inputText, updateResults, toilets, water, changeView, getNewLocati
           });
 
           setNewLocation(marker.getPosition());
+          geocoder = new google.maps.Geocoder();
+          geocoder
+          .geocode({location: marker.getPosition()})
+          .then((results) => {
+            console.log('results from reverse geocode', results)
+            getNewLocationInfo(results);
+          })
+          .catch((e) => {
+            alert("Geocode was not successful for the following reason: " + e);
+          });
 
           const infowindow = new google.maps.InfoWindow({
-            content: `<div>Click above to submit</div>`
+            content: `<div>Click above to submit for ${newLocationInfo.formatted_address}</div>`
           });
 
           infowindow.open({

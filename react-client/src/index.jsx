@@ -21,6 +21,7 @@ class App extends React.Component {
       water: false,
       results: [],
       newLocation: '',
+      newLocationInfo: '',
     };
 
     this.changeView = this.changeView.bind(this);
@@ -33,6 +34,7 @@ class App extends React.Component {
     this.updateResults = this.updateResults.bind(this);
     // this.getCurrentLocation = this.getCurrentLocation(this);
     this.getNewLocation = this.getNewLocation.bind(this);
+    this.getNewLocationInfo = this.getNewLocationInfo.bind(this);
     this.renderNavBar = this.renderNavBar.bind(this);
   }
 
@@ -95,17 +97,25 @@ class App extends React.Component {
     })
   }
 
+  getNewLocationInfo(info) {
+    this.setState({
+      newLocationInfo: info,
+    })
+  }
+
   renderView() {
-    const { view, inputLocation, currentLocation, newLocation, results, toilets, water } = this.state;
+    const { view, inputLocation, currentLocation, newLocation, newLocationInfo, results, toilets, water } = this.state;
     if (view === 'map') {
       this.renderNavBar()
       return (
-        <Map changeView={this.changeView} updateResults={this.updateResults} getNewLocation={this.getNewLocation} inputText={inputLocation} currentLocation={currentLocation} toilets={toilets} water={water} />
+        <Map changeView={this.changeView} updateResults={this.updateResults}
+          getNewLocation={this.getNewLocation} getNewLocationInfo={this.getNewLocationInfo}
+          inputText={inputLocation} currentLocation={currentLocation} toilets={toilets} water={water} />
       );
     } else if (view === 'list') {
       return <List changeView={this.changeView} results={results} inputText={inputLocation} currentLocation={currentLocation} />;
     } else if (view === 'add') {
-      return <AddForm changeView={this.changeView} newLocation={newLocation}/>;
+      return <AddForm changeView={this.changeView} newLocation={newLocation} newLocationInfo={newLocationInfo}/>;
     } else {
       return (
         <>
