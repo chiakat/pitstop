@@ -7,7 +7,7 @@ import $ from 'jquery';
 import { GOOGLE_API_KEY } from '../../../server/config.js';
 
 const Map = ({
-  inputText, updateResults, toilets, water, changeView, getNewLocation, getNewLocationInfo,
+  inputText, updateResults, water, changeView, getNewLocation, getNewLocationInfo,
 }) => {
   let map;
   let marker;
@@ -16,9 +16,10 @@ const Map = ({
   let inputLocation;
   let latitude;
   let longitude;
-  let calcLocation;
+  let calcLatLng;
   let currentLocation;
 
+  // my current location: (33.889390, -117.964080)
   // use SF as default map view if no location entered
   if (inputText === '') {
     inputText = 'San Francisco';
@@ -30,9 +31,7 @@ const Map = ({
 
   const [mapView, setMapView] = useState('readOnly');
   const [newLocation, setNewLocation] = useState('');
-  const [address, saveAddress] = useState('');
 
-  // const [location, setLocation] = useState(inputLocation);
   useEffect(() => getCurrentLocation(), [navigator.geolocation]);
   useEffect(() => initMap(currentLocation, inputText), [navigator.geolocation, mapView]);
   useEffect(() => getNewLocation(newLocation), [newLocation]);
@@ -232,15 +231,15 @@ const Map = ({
               inputLocation = results[0].geometry.location;
               latitude = inputLocation.lat();
               longitude = inputLocation.lng();
-              calcLocation = { lat: latitude, lng: longitude };
+              calcLatLng = { lat: latitude, lng: longitude };
               map.setCenter(inputLocation);
               marker.setPosition(inputLocation);
               marker.setMap(map);
-              return calcLocation;
+              return calcLatLng;
             })
-            .then((response) => {
-              console.log(response);
-              searchMapByText(response);
+            .then((currentLatLng) => {
+              console.log('mycurrentlocation', currentLatLng);
+              searchMapByText(currentLatLng);
             })
             .catch((e) => {
               alert(`Geocode was not successful for the following reason: ${e}`);
@@ -264,7 +263,7 @@ const Map = ({
     loader.load().then((google) => {
       const service = new google.maps.places.PlacesService(map);
       service.nearbySearch(
-        { location: response, radius: 1000, keyword: keywords },
+        { location, radius: 1000, keyword: keywords },
         (results, status, pagination) => {
           if (status !== 'OK' || !results) return;
           renderMarkers(results, map);

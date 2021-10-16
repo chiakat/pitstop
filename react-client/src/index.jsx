@@ -1,6 +1,7 @@
+/* eslint-disable import/extensions */
+/* eslint-disable jsx-a11y/control-has-associated-label */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import $ from 'jquery';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTint, faToilet, faSearch } from '@fortawesome/free-solid-svg-icons';
 
@@ -40,18 +41,6 @@ class App extends React.Component {
 
   }
 
-  toggleToilets() {
-    this.setState({
-      toilets: !this.state.toilets,
-    });
-  }
-
-  toggleWater() {
-    this.setState({
-      water: !this.state.water,
-    });
-  }
-
   handleChange(e) {
     this.setState({
       inputLocation: e.target.value,
@@ -59,25 +48,14 @@ class App extends React.Component {
   }
 
   handleSearch(e) {
+    const { inputLocation } = this.state;
     e.preventDefault();
-    console.log('Searching', this.state.inputLocation);
-    if (!this.state.inputLocation) {
+    console.log('Searching', inputLocation);
+    if (!inputLocation) {
       alert('Please enter a location');
     } else {
       this.changeView('map');
     }
-  }
-
-  changeView(option) {
-    this.setState({
-      view: option,
-    });
-  }
-
-  updateResults(searchResults) {
-    this.setState({
-      results: searchResults,
-    });
   }
 
   getNewLocation(location) {
@@ -89,6 +67,26 @@ class App extends React.Component {
   getNewLocationInfo(info) {
     this.setState({
       newLocationInfo: info,
+    });
+  }
+
+  toggleToilets() {
+    this.setState((prevState) => ({ toilets: !prevState }));
+  }
+
+  toggleWater() {
+    this.setState((prevState) => ({ water: !prevState }));
+  }
+
+  changeView(option) {
+    this.setState({
+      view: option,
+    });
+  }
+
+  updateResults(searchResults) {
+    this.setState({
+      results: searchResults,
     });
   }
 
@@ -135,6 +133,7 @@ class App extends React.Component {
           Find...
           <div className="search">
             <button
+              type="button"
               id={toilets ? 'toilets-active' : 'toilets-inactive'}
               onClick={this.toggleToilets}
             >
@@ -142,6 +141,7 @@ class App extends React.Component {
               Toilets
             </button>
             <button
+              type="button"
               id={water ? 'water-active' : 'water-inactive'}
               onClick={this.toggleWater}
             >
@@ -155,13 +155,13 @@ class App extends React.Component {
               type="search"
               id="search"
               placeholder="Enter a location..."
-              value={this.state.inputLocation}
+              value={inputLocation}
               onChange={(e) => this.handleChange(e)}
             />
             <datalist id="searchList">
               <option value="Use Current Location">Use Current Location</option>
             </datalist>
-            <button id="go"><FontAwesomeIcon icon={faSearch} /></button>
+            <button type="submit" id="go"><FontAwesomeIcon icon={faSearch} /></button>
           </form>
         </div>
       </>
@@ -175,6 +175,9 @@ class App extends React.Component {
         <div className="nav">
           <span
             className="logo"
+            role="button"
+            tabIndex={0}
+            onKeyPress={() => this.changeView('home')}
             onClick={() => this.changeView('home')}
           >
             Home
@@ -183,6 +186,9 @@ class App extends React.Component {
             className={view === 'map'
               ? 'nav-selected'
               : 'nav-unselected'}
+            role="button"
+            tabIndex={0}
+            onKeyPress={() => this.changeView('map')}
             onClick={() => this.changeView('map')}
           >
             Map
@@ -191,6 +197,9 @@ class App extends React.Component {
             className={view === 'list'
               ? 'nav-selected'
               : 'nav-unselected'}
+            role="button"
+            tabIndex={0}
+            onKeyPress={() => this.changeView('list')}
             onClick={() => this.changeView('list')}
           >
             List
@@ -199,6 +208,9 @@ class App extends React.Component {
             className={view === 'add'
               ? 'nav-selected'
               : 'nav-unselected'}
+            role="button"
+            tabIndex={0}
+            onKeyPress={() => this.changeView('add')}
             onClick={() => this.changeView('add')}
           >
             Add More
