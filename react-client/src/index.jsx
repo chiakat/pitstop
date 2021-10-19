@@ -6,12 +6,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTint, faToilet, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faTint, faToilet, faSearch, faHome, faMap, faListUl, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 import AddMarker from './components/AddMarker.jsx';
 import List from './components/List.jsx';
 import Map from './components/Map.jsx';
 import AddForm from './components/AddForm.jsx';
+import Directions from './components/Directions.jsx';
 
 class App extends React.Component {
   constructor() {
@@ -26,6 +27,7 @@ class App extends React.Component {
       newLocation: '',
       newLocationInfo: '',
       newAddress: '',
+      destination: '',
     };
 
     this.changeView = this.changeView.bind(this);
@@ -39,6 +41,7 @@ class App extends React.Component {
     this.getNewLocation = this.getNewLocation.bind(this);
     this.getNewLocationInfo = this.getNewLocationInfo.bind(this);
     this.renderNavBar = this.renderNavBar.bind(this);
+    this.getDirections = this.getDirections.bind(this);
   }
 
   componentDidMount() {
@@ -71,6 +74,18 @@ class App extends React.Component {
   getNewLocationInfo(info) {
     this.setState({
       newLocationInfo: info,
+    });
+  }
+
+  getDestination(place) {
+    this.setState({
+      destination: place,
+    });
+  }
+
+  getDirections(route) {
+    this.setState({
+      directions: route,
     });
   }
 
@@ -124,7 +139,7 @@ class App extends React.Component {
   renderView() {
     const {
       view, inputLocation, currentLocation, newLocation, newLocationInfo,
-      results, toilets, water, newAddress,
+      results, toilets, water, newAddress, destination, getDirections,
     } = this.state;
     if (view === 'map') {
       this.renderNavBar();
@@ -134,6 +149,7 @@ class App extends React.Component {
           updateResults={this.updateResults}
           getNewLocation={this.getNewLocation}
           getNewLocationInfo={this.getNewLocationInfo}
+          getDirections={this.getDirections}
           inputText={inputLocation}
           currentLocation={currentLocation}
           toilets={toilets}
@@ -148,6 +164,9 @@ class App extends React.Component {
           results={results}
           inputText={inputLocation}
           currentLocation={currentLocation}
+          destination={destination}
+          getDirections={this.getDirections}
+
         />
       );
     } if (view === 'add') {
@@ -157,6 +176,16 @@ class App extends React.Component {
           newLocation={newLocation}
           newLocationInfo={newLocationInfo}
           newAddress={newAddress}
+        />
+      );
+    }
+    if (view === 'directions') {
+      return (
+        <Directions
+          changeView={this.changeView}
+          destination={destination}
+          currentLocation={currentLocation}
+          getDirections={this.getDirections}
         />
       );
     }
@@ -214,7 +243,7 @@ class App extends React.Component {
             onKeyPress={() => this.changeView('home')}
             onClick={() => this.changeView('home')}
           >
-            Home
+            <FontAwesomeIcon icon={faHome} />
           </span>
           <span
             className={view === 'map'
@@ -225,7 +254,7 @@ class App extends React.Component {
             onKeyPress={() => this.changeView('map')}
             onClick={() => this.changeView('map')}
           >
-            Map
+            <FontAwesomeIcon icon={faMap} />
           </span>
           <span
             className={view === 'list'
@@ -236,7 +265,7 @@ class App extends React.Component {
             onKeyPress={() => this.changeView('list')}
             onClick={() => this.changeView('list')}
           >
-            List
+            <FontAwesomeIcon icon={faListUl} />
           </span>
           <span
             className={view === 'add'
@@ -247,7 +276,7 @@ class App extends React.Component {
             onKeyPress={() => this.changeView('add')}
             onClick={() => this.changeView('add')}
           >
-            Add More
+             <FontAwesomeIcon icon={faPlus} />
           </span>
         </div>
       );

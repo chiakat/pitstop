@@ -228,7 +228,7 @@ const Map = ({
           addButton.addEventListener('click', () => addDetail());
         }
         addButton.classList.add('custom-map-control-button');
-        map.controls[google.maps.ControlPosition.TOP_CENTER].push(addButton);
+        map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(addButton);
 
         // add event listener to add marker where map is clicked
         google.maps.event.addListener(map, 'click', (event) => {

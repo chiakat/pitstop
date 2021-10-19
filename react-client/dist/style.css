@@ -67,6 +67,10 @@ html, body {
   margin-right: 5px;
 }
 
+.nav span:hover {
+  color: #002a33;
+  size: 30px;
+}
 
 /* Home Page ------------------------------------*/
 button {
@@ -227,8 +231,8 @@ li {
   background-color: #f1f1f1;
   padding: max(1.5vh, 1.5vw);
   text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+  /* white-space: nowrap; */
+  /* overflow: hidden; */
   font-size: min(max(2vh, 1.6vw), 30px);
   cursor: pointer;
   margin-bottom: max(2vh, 2vw);
