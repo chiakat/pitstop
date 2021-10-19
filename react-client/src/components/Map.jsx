@@ -71,7 +71,7 @@ const Map = ({
   const mapOptions = {
     mapId: 'a121546c2907cd53',
     center: currentLocation || inputLocation,
-    zoom: 15,
+    zoom: 14,
     mapTypeControl: false,
   };
 
@@ -127,7 +127,7 @@ const Map = ({
               return '';
             };
 
-            const photo = place.photos[0].photo_reference ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photo_reference=${place.photos[0].photo_reference}&key=${GOOGLE_API_KEY}` : '';
+            // const photo = place.photos[0].photo_reference ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photo_reference=${place.photos[0].photo_reference}&key=${GOOGLE_API_KEY}` : '';
 
             const contentString = `<div class="info">
               <h4>${place.name}</h4>
@@ -141,7 +141,6 @@ const Map = ({
               <div>${place.formatted_address}</div>
               <div>Status: ${place.business_status}</div>
               <div>${renderRatings(place)}</div>
-              <div>${photo}</div>
               </div>`;
 
             const infowindow = new google.maps.InfoWindow({
@@ -182,7 +181,8 @@ const Map = ({
     loader.load().then((google) => {
       const service = new google.maps.places.PlacesService(map);
       service.textSearch(
-        { location, radius: 100, query: 'public restroom|toilet|safeway|target|library' },
+        { location, radius: 100, query: 'public restroom' },
+        // alt search: restroom|safeway|target|library|toilet
         (results, status, pagination) => {
           if (status !== 'OK' || !results) return;
           renderMarkers(results, map);
