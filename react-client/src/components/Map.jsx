@@ -127,14 +127,21 @@ const Map = ({
               return '';
             };
 
+            const photo = place.photos[0].photo_reference ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photo_reference=${place.photos[0].photo_reference}&key=${GOOGLE_API_KEY}` : '';
+
             const contentString = `<div class="info">
               <h4>${place.name}</h4>
-              <div>Accessible  Open Now  Free</div>
-              <span>${placeDistance}</span>
-              <span>${placeDuration}</span>
+              <div class="info-labels">
+                <span>Accessible</span>
+                <span>Open Now</span>
+                <span>Free</span>
+              </div>
+              <span class="dist">${placeDistance}</span>
+              <span class="duration">${placeDuration}</span>
               <div>${place.formatted_address}</div>
               <div>Status: ${place.business_status}</div>
               <div>${renderRatings(place)}</div>
+              <div>${photo}</div>
               </div>`;
 
             const infowindow = new google.maps.InfoWindow({
@@ -175,7 +182,7 @@ const Map = ({
     loader.load().then((google) => {
       const service = new google.maps.places.PlacesService(map);
       service.textSearch(
-        { location, radius: 100, query: 'public restroom|safeway|target|library' },
+        { location, radius: 100, query: 'public restroom|toilet|safeway|target|library' },
         (results, status, pagination) => {
           if (status !== 'OK' || !results) return;
           renderMarkers(results, map);
@@ -185,6 +192,22 @@ const Map = ({
       );
     });
   };
+
+  // // Perform a nearby search.
+  // const searchNearby = (location) => {
+  //   loader.load().then((google) => {
+  //     const service = new google.maps.places.PlacesService(map);
+  //     service.nearbySearch(
+  //       { location, radius: 1000, keyword: keywords },
+  //       (results, status, pagination) => {
+  //         if (status !== 'OK' || !results) return;
+  //         renderMarkers(results, map);
+  //         // console.log('here are the results', results);
+  //         updateResults(results);
+  //       },
+  //     );
+  //   });
+  // };
 
   // finds the address of the location that was clicked and change to add Form view
   const addDetail = () => {
@@ -202,7 +225,7 @@ const Map = ({
       });
   };
 
-  // initiates the map using options and functions above
+  // Primary Function: initiates the map using options and functions above ---------------------//
   const initMap = (address) => {
     loader.load()
       .then(() => {
@@ -359,22 +382,7 @@ const Map = ({
         alert('Failed to load. Please try again.');
       });
   };
-
-  // Perform a nearby search.
-  const searchNearby = (location) => {
-    loader.load().then((google) => {
-      const service = new google.maps.places.PlacesService(map);
-      service.nearbySearch(
-        { location, radius: 1000, keyword: keywords },
-        (results, status, pagination) => {
-          if (status !== 'OK' || !results) return;
-          renderMarkers(results, map);
-          // console.log('here are the results', results);
-          updateResults(results);
-        },
-      );
-    });
-  };
+  // End of initMap Wrapper -----------------------------------------------------------//
 
   useEffect(() => getCurrentLocation(), [navigator.geolocation]);
   useEffect(() => initMap(inputText), [navigator.geolocation, mapView]);
