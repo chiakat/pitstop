@@ -1,12 +1,13 @@
 sqlite3 toiletsandtap.db;
-
 -- ---
 -- CREATE TABLES
 -- ---
 DROP TABLE toiletsandtap;
 CREATE TABLE toiletsandtap (
-  placeId varchar,
+  place_id varchar UNIQUE,
+  status text NOT NULL DEFAULT 'OPERATIONAL',
   name text NOT NULL,
+  address varchar NOT NULL,
   location varchar NOT NULL,
   latitude varchar NOT NULL,
   longitude varchar NOT NULL,
@@ -24,6 +25,7 @@ CREATE TABLE toiletsandtap (
   needKey boolean NOT NULL DEFAULT false,
   isVerified boolean NOT NULL DEFAULT false,
   rating int NOT NULL DEFAULT 0,
+  user_ratings_total int NOT NULL DEFAULT 0,
   type text NOT NULL DEFAULT 'toilet'
 );
 

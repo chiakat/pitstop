@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
 import $ from 'jquery';
@@ -8,7 +9,7 @@ class AddForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      placeId: '',
+      place_id: '',
       name: '',
       directions: '',
       hours: '',
@@ -27,7 +28,6 @@ class AddForm extends React.Component {
       avg_rating: 0,
       count_rating: 0,
       type: 'toilet',
-      formatted_address: '',
       business_status: 'O',
     };
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -50,7 +50,7 @@ class AddForm extends React.Component {
 
   handleSubmit(event) {
     const {
-      placeId, name, directions, hours, publicOrPrivate, isAccessible, male, female,
+      place_id, name, directions, hours, publicOrPrivate, isAccessible, male, female,
       hasChangingTable, hasToiletPaper, hasSoap, unisex, isFree, needKey, isVerified, rating, type,
     } = this.state;
     const { newLocation } = this.props;
@@ -60,9 +60,10 @@ class AddForm extends React.Component {
     } else {
       // send data with axios
       axios.post('/addRecord', {
-        placeId,
+        place_id,
         name,
         location: newLocation,
+        // address: newAddress,
         directions,
         hours,
         publicOrPrivate,
@@ -85,7 +86,7 @@ class AddForm extends React.Component {
           console.log(response);
           // clear states after successful submission
           this.setState({
-            placeId: '',
+            place_id: '',
             name: '',
             directions: '',
             hours: '',
@@ -116,7 +117,7 @@ class AddForm extends React.Component {
 
   render() {
     const {
-      placeId, name, directions, hours, isAccessible, male, female,
+      place_id, name, directions, hours, isAccessible, male, female,
       hasChangingTable, hasToiletPaper, hasSoap, unisex, isFree, needKey,
     } = this.state;
     return (

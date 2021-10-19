@@ -1,7 +1,9 @@
 ### node etc ###
 
 # Keys and Passwords
+config
 config.js
+aws-mvp.pem
 
 # Logs
 logs

@@ -1,7 +1,10 @@
+/* eslint-disable no-console */
+/* eslint-disable camelcase */
 /* eslint-disable import/extensions */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React from 'react';
 import ReactDOM from 'react-dom';
+import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTint, faToilet, faSearch } from '@fortawesome/free-solid-svg-icons';
 
@@ -22,6 +25,7 @@ class App extends React.Component {
       results: [],
       newLocation: '',
       newLocationInfo: '',
+      newAddress: '',
     };
 
     this.changeView = this.changeView.bind(this);
@@ -91,14 +95,36 @@ class App extends React.Component {
   }
 
   updateResults(searchResults) {
+    // send results to database
+    console.log('results to send', searchResults);
     this.setState({
       results: searchResults,
+    });
+    const {
+      place_id, business_status, formatted_address, geometry, name,
+      opening_hours, photos, rating, user_ratings_total,
+    } = searchResults[0];
+    axios.post('/saveResults', {
+      status: business_status,
+      address: formatted_address,
+      location: geometry.location,
+      latitude: geometry.location.lat(),
+      longitude: geometry.location.lng(),
+      name,
+      // array of opening periods covering 7 days, starting Sunday
+      hours: opening_hours,
+      photos,
+      place_id,
+      rating,
+      user_ratings_total,
+      type: 'toilet',
     });
   }
 
   renderView() {
     const {
-      view, inputLocation, currentLocation, newLocation, newLocationInfo, results, toilets, water,
+      view, inputLocation, currentLocation, newLocation, newLocationInfo,
+      results, toilets, water, newAddress,
     } = this.state;
     if (view === 'map') {
       this.renderNavBar();
@@ -129,6 +155,7 @@ class App extends React.Component {
           changeView={this.changeView}
           newLocation={newLocation}
           newLocationInfo={newLocationInfo}
+          newAddress={newAddress}
         />
       );
     }
@@ -227,7 +254,8 @@ class App extends React.Component {
     return (
       <div className="header">
         <img id="logo" alt="toilet and tap logo" src="/images/toilettaplogo_white.png" />
-        <p>Toilets &#38; Tap</p>
+        {/* <p>Toilets &#38; Tap</p> */}
+        <p>PitStop</p>
       </div>
     );
   }

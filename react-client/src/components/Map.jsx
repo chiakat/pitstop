@@ -39,7 +39,7 @@ const Map = ({
 
   // get current location
   const getCurrentLocation = (input) => {
-    console.log('click');
+    console.log('get current location');
     if (input === 'Use Current Location') {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -102,7 +102,7 @@ const Map = ({
         let placeDuration = '';
         // get distance between the current location and result marker
         const distService = new google.maps.DistanceMatrixService();
-        console.log('location submitted to distService', inputText);
+        // console.log('location submitted to distService', inputText);
         distService.getDistanceMatrix(
           {
             origins: [inputText],
@@ -113,9 +113,9 @@ const Map = ({
             avoidTolls: true,
           }, (response, status) => {
             if (status !== 'OK' || !response) return;
-            console.log('here are the responses', response);
-            console.log('distance', response.rows[0].elements[0].distance.text);
-            console.log('duration', response.rows[0].elements[0].duration.text);
+            // console.log('here are the responses', response);
+            // console.log('distance', response.rows[0].elements[0].distance.text);
+            // console.log('duration', response.rows[0].elements[0].duration.text);
             placeDistance = response.rows[0].elements[0].distance.text;
             placeDuration = response.rows[0].elements[0].duration.text;
 
@@ -172,11 +172,11 @@ const Map = ({
     loader.load().then((google) => {
       const service = new google.maps.places.PlacesService(map);
       service.textSearch(
-        { location, radius: 500, query: 'public restroom' },
+        { location, radius: 500, query: 'restroom' },
         (results, status, pagination) => {
           if (status !== 'OK' || !results) return;
           renderMarkers(results, map);
-          console.log('here are the results', results);
+          // console.log('here are the results', results);
           updateResults(results);
         },
       );
@@ -271,20 +271,20 @@ const Map = ({
           });
         };
 
-        // search based on location entered in search box
-        const searchBox = document.createElement("input");
-        searchBox.textContent = "Search Current Location";
-        searchBox.classList.add("custom-map-control-button");
-        map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchBox);
-        searchBox.addEventListener("change", (e) => setSearchLocation(e.target.value));
-        searchBox.addEventListener("submit", (e) => setSearchLocation(e.target.value));
+        // // search based on location entered in search box
+        // const searchBox = document.createElement("input");
+        // searchBox.textContent = "Search Current Location";
+        // searchBox.classList.add("custom-map-control-button");
+        // map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchBox);
+        // searchBox.addEventListener("change", (e) => setSearchLocation(e.target.value));
+        // searchBox.addEventListener("submit", (e) => setSearchLocation(e.target.value));
 
-        // create search box to submit request
-        const searchButton = document.createElement("button");
-        searchButton.textContext = "Search";
-        searchButton.classList.add("custom-map-control-button");
-        map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchButton);
-        searchButton.addEventListener("click", () => renderResults(searchLocation));
+        // // create search box to submit request
+        // const searchButton = document.createElement("button");
+        // searchButton.textContext = "Search";
+        // searchButton.classList.add("custom-map-control-button");
+        // map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchButton);
+        // searchButton.addEventListener("click", () => renderResults(searchLocation));
 
         // // Create the search box and link it to the UI element.
         // const input = document.getElementById("pac-input");
@@ -354,7 +354,7 @@ const Map = ({
         (results, status, pagination) => {
           if (status !== 'OK' || !results) return;
           renderMarkers(results, map);
-          console.log('here are the results', results);
+          // console.log('here are the results', results);
           updateResults(results);
         },
       );
