@@ -85,7 +85,7 @@ button {
   background-color: #00e1ff;
   border-radius: 1vh;
   margin-bottom: 2vh;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+  /* box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px; */
 }
 
 button:hover {
@@ -183,6 +183,16 @@ input {
 
 .map-container input {
   width: 20vw;
+}
+
+.info {
+  color: black;
+  font-family: 'Quicksand', sans-serif;
+}
+
+.info h4 {
+  margin: 1px;
+  color: #027373;
 }
 
 /* Result List ------------------------------------*/

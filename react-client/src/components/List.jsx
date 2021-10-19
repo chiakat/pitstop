@@ -1,9 +1,38 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Loader } from '@googlemaps/js-api-loader';
 
-const List = ({ results }) => {
+const List = ({ results, changeView }) => {
   const handleClick = (place) => {
     console.log('clicked', place);
+    changeView('directions');
+    // loader.load()
+    //   .then(() => {
+    //     const getDirections = (place) => {
+    //       const directionsService = new google.maps.DirectionsService();
+    //       const directionsRenderer = new google.maps.DirectionsRenderer();
+    //       const mapOptions = {
+    //         zoom: 7,
+    //         center: currentLocation,
+    //       };
+    //       const map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    //       directionsRenderer.setMap(map);
+    //       directionsRenderer.setPanel(document.getElementById('directionsPanel'));
+    //     };
+
+    //     const calcRoute = () => {
+    //       const request = {
+    //         origin: [inputText],
+    //         destination: [place.geometry.location],
+    //         travelMode: 'WALKING',
+    //       };
+    //       directionsService.route(request, (response, status) => {
+    //         if (status == 'OK') {
+    //           directionsRenderer.setDirections(response);
+    //         }
+    //       });
+    //     };
+    //   });
   };
 
   const renderRatings = (place) => {
@@ -23,13 +52,6 @@ const List = ({ results }) => {
     }
     return null;
   };
-
-  // const renderPhoto = (place) => {
-  //   if (place.photos) {
-  //       return place.photos[0].html_attributions[0];
-  //   }
-  //   return null;
-  // }
 
   return (
     <>

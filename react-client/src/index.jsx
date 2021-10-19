@@ -28,6 +28,8 @@ class App extends React.Component {
       newLocationInfo: '',
       newAddress: '',
       destination: '',
+      distance: '',
+      time: '',
     };
 
     this.changeView = this.changeView.bind(this);
@@ -42,6 +44,7 @@ class App extends React.Component {
     this.getNewLocationInfo = this.getNewLocationInfo.bind(this);
     this.renderNavBar = this.renderNavBar.bind(this);
     this.getDirections = this.getDirections.bind(this);
+    this.getDistanceTime = this.getDistanceTime.bind(this);
   }
 
   componentDidMount() {
@@ -74,6 +77,13 @@ class App extends React.Component {
   getNewLocationInfo(info) {
     this.setState({
       newLocationInfo: info,
+    });
+  }
+
+  getDistanceTime(dist, time) {
+    this.setState({
+      distance: dist,
+      duration: time
     });
   }
 

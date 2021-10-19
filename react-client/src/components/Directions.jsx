@@ -20,7 +20,7 @@ const Directions = ({ currentLocation, destination }) => {
   // set options to center custom map around given location
   const mapOptions = {
     mapId: 'a121546c2907cd53',
-    center: currentLocation
+    center: currentLocation,
     zoom: 14,
     mapTypeControl: false,
   };
@@ -55,6 +55,16 @@ const Directions = ({ currentLocation, destination }) => {
       });
     };
   };
+
+  initMap(currentLocation);
+
+  return (
+    <>
+      <div className="map-container">
+        <div id="map" />
+      </div>
+    </>
+  );
 };
 
 export default Directions;

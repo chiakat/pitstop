@@ -6,7 +6,8 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Loader } from '@googlemaps/js-api-loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarkerAlt, faDirections } from '@fortawesome/free-solid-svg-icons';
+
 import { GOOGLE_API_KEY } from '../../../server/config.js';
 
 const Map = ({
@@ -70,7 +71,7 @@ const Map = ({
   const mapOptions = {
     mapId: 'a121546c2907cd53',
     center: currentLocation || inputLocation,
-    zoom: 14,
+    zoom: 15,
     mapTypeControl: false,
   };
 
@@ -119,6 +120,33 @@ const Map = ({
             placeDistance = response.rows[0].elements[0].distance.text;
             placeDuration = response.rows[0].elements[0].duration.text;
 
+            // const getDirections = (place) => {
+            //   const directionsService = new google.maps.DirectionsService();
+            //   const directionsRenderer = new google.maps.DirectionsRenderer();
+            //   const mapOptions = {
+            //     zoom: 7,
+            //     center: currentLocation,
+            //   };
+            //   const map = new google.maps.Map(document.getElementById('map'), mapOptions);
+            //   directionsRenderer.setMap(map);
+            //   directionsRenderer.setPanel(document.getElementById('directionsPanel'));
+            // };
+
+            // const calcRoute = () => {
+            //   const request = {
+            //     origin: [inputText],
+            //     destination: [place.geometry.location],
+            //     travelMode: 'WALKING',
+            //   };
+            //   directionsService.route(request, (response, status) => {
+            //     if (status == 'OK') {
+            //       directionsRenderer.setDirections(response);
+            //     }
+            //   });
+            // };
+
+
+
             const renderRatings = () => {
               if (place.user_ratings_total > 0) {
                 return `⭐ ${place.rating} &#40;${place.user_ratings_total}&#41;`;
@@ -126,13 +154,15 @@ const Map = ({
               return '';
             };
 
-            const contentString = `<h4>${place.name}</h4>
+            const contentString = `<div class="info">
+              <h4>${place.name}</h4>
               <div>Accessible  Open Now  Free</div>
               <span>${placeDistance}</span>
               <span>${placeDuration}</span>
               <div>${place.formatted_address}</div>
               <div>Status: ${place.business_status}</div>
-              <div>${renderRatings(place)}</div>`;
+              <div>${renderRatings(place)}</div>
+              </div>`;
 
             const infowindow = new google.maps.InfoWindow({
               content: contentString,
@@ -172,7 +202,7 @@ const Map = ({
     loader.load().then((google) => {
       const service = new google.maps.places.PlacesService(map);
       service.textSearch(
-        { location, radius: 500, query: 'restroom' },
+        { location, radius: 100, query: 'public restroom|safeway|target|library' },
         (results, status, pagination) => {
           if (status !== 'OK' || !results) return;
           renderMarkers(results, map);
@@ -244,7 +274,6 @@ const Map = ({
             position: location,
             map,
             draggable: true,
-            animation: google.maps.Animation.DROP,
             icon: {
               path: faMapMarkerAlt.icon[4],
               fillColor: '#91DB22',
