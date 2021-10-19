@@ -4,10 +4,10 @@ sqlite3 toiletsandtap.db;
 -- ---
 DROP TABLE toiletsandtap;
 CREATE TABLE toiletsandtap (
-  place_id varchar UNIQUE,
+  place_id varchar,
   status text NOT NULL DEFAULT 'OPERATIONAL',
   name text NOT NULL,
-  address varchar NOT NULL,
+  address varchar,
   location varchar NOT NULL,
   latitude varchar NOT NULL,
   longitude varchar NOT NULL,

@@ -53,7 +53,7 @@ class AddForm extends React.Component {
       place_id, name, directions, hours, publicOrPrivate, isAccessible, male, female,
       hasChangingTable, hasToiletPaper, hasSoap, unisex, isFree, needKey, isVerified, rating, type,
     } = this.state;
-    const { newLocation } = this.props;
+    const { newLocation, newAddress } = this.props;
     event.preventDefault();
     if (name === '' || rating === 0) {
       alert('Please provide a name and rating to submit.');
@@ -63,7 +63,7 @@ class AddForm extends React.Component {
         place_id,
         name,
         location: newLocation,
-        // address: newAddress,
+        address: newAddress,
         directions,
         hours,
         publicOrPrivate,

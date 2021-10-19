@@ -11,9 +11,9 @@ app.use(express.static(`${__dirname}/../react-client/dist`));
 
 // adds the new records to the database
 app.post('/addRecord', (req, res) => {
-  console.log(req.body);
+  console.log('attept to add:', req.body);
   const {
-    name, directions, hours, publicOrPrivate, isAccessible, male, female,
+    name, directions, address, hours, publicOrPrivate, isAccessible, male, female,
     hasChangingTable, hasToiletPaper, hasSoap, unisex, isFree, needKey, isVerified, rating, type,
   } = req.body;
 
@@ -24,12 +24,14 @@ app.post('/addRecord', (req, res) => {
   location = JSON.stringify(location);
   console.log('place_id', place_id);
 
-  const values = [place_id, name, directions, location, latitude, longitude,
-    directions, hours, publicOrPrivate, isAccessible, male, female,
+  const values = [place_id, name, location, latitude, longitude,
+    directions, address, hours, publicOrPrivate, isAccessible, male, female,
     hasChangingTable, hasToiletPaper, hasSoap, unisex, isFree, needKey, isVerified, rating, type];
 
-  const insertQuery = `INSERT OR REPLACE INTO toiletsandtap(place_id, name, directions, location, latitude, longitude, hours, publicOrPrivate, isAccessible, male, female, hasChangingTable, hasToiletPaper, hasSoap, unisex, isFree, needKey, isVerified, rating, type)
-    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  const insertQuery = `INSERT OR REPLACE INTO toiletsandtap(place_id, name, location, address,
+    latitude, longitude, directions, hours, publicOrPrivate, isAccessible, male, female,
+    hasChangingTable, hasToiletPaper, hasSoap, unisex, isFree, needKey, isVerified, rating, type)
+    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
   db.run(insertQuery, values, (err) => {
     if (err) {
