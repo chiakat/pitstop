@@ -6,7 +6,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTint, faToilet, faSearch, faHome, faMap, faListUl, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faTint, faToilet, faSearch, faHome, faMap, faListUl, faPlus,
+} from '@fortawesome/free-solid-svg-icons';
 
 import AddMarker from './components/AddMarker.jsx';
 import List from './components/List.jsx';
@@ -30,6 +32,7 @@ class App extends React.Component {
       destination: '',
       distance: '',
       time: '',
+      editMode: false,
     };
 
     this.changeView = this.changeView.bind(this);
@@ -83,7 +86,7 @@ class App extends React.Component {
   getDistanceTime(dist, time) {
     this.setState({
       distance: dist,
-      duration: time
+      duration: time,
     });
   }
 
@@ -181,6 +184,19 @@ class App extends React.Component {
       );
     } if (view === 'add') {
       return (
+      //   <Map
+      //     changeView={this.changeView}
+      //     updateResults={this.updateResults}
+      //     getNewLocation={this.getNewLocation}
+      //     getNewLocationInfo={this.getNewLocationInfo}
+      //     getDirections={this.getDirections}
+      //     inputText={inputLocation}
+      //     currentLocation={currentLocation}
+      //     toilets={toilets}
+      //     water={water}
+      //     newLocationInfo={newLocationInfo}
+      //     editMode={editMode}
+      //   />
         <AddForm
           changeView={this.changeView}
           newLocation={newLocation}
@@ -286,7 +302,7 @@ class App extends React.Component {
             onKeyPress={() => this.changeView('add')}
             onClick={() => this.changeView('add')}
           >
-             <FontAwesomeIcon icon={faPlus} />
+            <FontAwesomeIcon icon={faPlus} />
           </span>
         </div>
       );

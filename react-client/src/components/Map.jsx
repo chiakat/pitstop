@@ -120,33 +120,6 @@ const Map = ({
             placeDistance = response.rows[0].elements[0].distance.text;
             placeDuration = response.rows[0].elements[0].duration.text;
 
-            // const getDirections = (place) => {
-            //   const directionsService = new google.maps.DirectionsService();
-            //   const directionsRenderer = new google.maps.DirectionsRenderer();
-            //   const mapOptions = {
-            //     zoom: 7,
-            //     center: currentLocation,
-            //   };
-            //   const map = new google.maps.Map(document.getElementById('map'), mapOptions);
-            //   directionsRenderer.setMap(map);
-            //   directionsRenderer.setPanel(document.getElementById('directionsPanel'));
-            // };
-
-            // const calcRoute = () => {
-            //   const request = {
-            //     origin: [inputText],
-            //     destination: [place.geometry.location],
-            //     travelMode: 'WALKING',
-            //   };
-            //   directionsService.route(request, (response, status) => {
-            //     if (status == 'OK') {
-            //       directionsRenderer.setDirections(response);
-            //     }
-            //   });
-            // };
-
-
-
             const renderRatings = () => {
               if (place.user_ratings_total > 0) {
                 return `⭐ ${place.rating} &#40;${place.user_ratings_total}&#41;`;
@@ -236,14 +209,15 @@ const Map = ({
         map = new google.maps.Map(document.getElementById('map'), mapOptions);
         marker = new google.maps.Marker({
           map,
-          draggable: true,
-          animation: google.maps.Animation.DROP,
-          // postion: results[0].geometry.location,
+          draggable: mapView === 'readOnly',
+          animation: mapView === 'readOnly' ? google.maps.Animation.DROP : 'none',
         });
 
         // provide new results if marker is moved
         google.maps.event.addListener(marker, 'dragend', () => {
-          // setNewLocation(marker.getPosition());
+          const lat = marker.getPosition().lat();
+          const lng = marker.getPosition().lng();
+          setNewLocation({ lat, lng });
           console.log(marker.getPosition());
           console.log('newLocation', newLocation);
         });
@@ -258,7 +232,7 @@ const Map = ({
           addButton.addEventListener('click', () => addDetail());
         }
         addButton.classList.add('custom-map-control-button');
-        map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(addButton);
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(addButton);
 
         // add event listener to add marker where map is clicked
         google.maps.event.addListener(map, 'click', (event) => {
