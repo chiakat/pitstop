@@ -21,6 +21,7 @@ const Map = ({
   let longitude;
   let calcLatLng;
   let currentLocation;
+  let markerCount = 0;
 
   // my current location: (33.889390, -117.964080)
   // use SF as default map view if no location entered
@@ -35,7 +36,6 @@ const Map = ({
   const [mapView, setMapView] = useState('readOnly');
   const [newLocation, setNewLocation] = useState('');
   const [searchLocation, setSearchLocation] = useState('');
-
 
   // get current location
   const getCurrentLocation = (input) => {
@@ -206,6 +206,16 @@ const Map = ({
         map = new google.maps.Map(document.getElementById('map'), mapOptions);
         marker = new google.maps.Marker({
           map,
+          draggable: true,
+          animation: google.maps.Animation.DROP,
+          // postion: results[0].geometry.location,
+        });
+
+        // provide new results if marker is moved
+        google.maps.event.addListener(marker, 'dragend', () => {
+          // setNewLocation(marker.getPosition());
+          console.log(marker.getPosition());
+          console.log('newLocation', newLocation);
         });
 
         // button to add more markers
@@ -223,7 +233,7 @@ const Map = ({
         // add event listener to add marker where map is clicked
         google.maps.event.addListener(map, 'click', (event) => {
           console.log('clicked any time', mapView);
-          if (mapView === 'edit') {
+          if (mapView === 'edit' && markerCount === 0) {
             console.log('clicked with edit');
             addMarker(event.latLng);
           }
@@ -233,6 +243,8 @@ const Map = ({
           const newMarker = new google.maps.Marker({
             position: location,
             map,
+            draggable: true,
+            animation: google.maps.Animation.DROP,
             icon: {
               path: faMapMarkerAlt.icon[4],
               fillColor: '#91DB22',
@@ -247,6 +259,7 @@ const Map = ({
             },
             title: 'FontAwesome SVG Marker',
           });
+          markerCount += 1;
 
           setNewLocation(marker.getPosition());
           geocoder = new google.maps.Geocoder();
@@ -295,7 +308,6 @@ const Map = ({
         // map.addListener("bounds_changed", () => {
         //   searchBox.setBounds(map.getBounds());
         // });
-
 
         const renderResults = (searchText) => {
           console.log('processing', searchText);

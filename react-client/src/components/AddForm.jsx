@@ -245,8 +245,8 @@ class AddForm extends React.Component {
 AddForm.propTypes = {
   changeView: PropTypes.func.isRequired,
   newLocation: PropTypes.shape({
-    lat: PropTypes.number,
-    lng: PropTypes.number,
+    lat: PropTypes.func,
+    lng: PropTypes.func,
   }).isRequired,
 };
 

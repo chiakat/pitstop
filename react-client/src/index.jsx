@@ -138,6 +138,7 @@ class App extends React.Component {
           currentLocation={currentLocation}
           toilets={toilets}
           water={water}
+          newLocationInfo={newLocationInfo}
         />
       );
     } if (view === 'list') {
