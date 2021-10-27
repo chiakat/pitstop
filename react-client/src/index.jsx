@@ -54,6 +54,28 @@ class App extends React.Component {
 
   }
 
+  // // get current location
+  // getCurrentLocation() {
+  //   console.log('get current location');
+  //   if (input === 'Use Current Location') {
+  //     if (navigator.geolocation) {
+  //       navigator.geolocation.getCurrentPosition(
+  //         (position) => {
+  //           console.log('position', position);
+  //           currentLocation = {
+  //             lat: position.coords.latitude,
+  //             lng: position.coords.longitude,
+  //           };
+  //         },
+  //       );
+  //       console.log(currentLocation);
+  //       return currentLocation;
+  //     }
+  //     alert('Please enable location services');
+  //   }
+  //   return null;
+  // };
+
   handleChange(e) {
     this.setState({
       inputLocation: e.target.value,
@@ -66,9 +88,25 @@ class App extends React.Component {
     console.log('Searching', inputLocation);
     if (!inputLocation) {
       alert('Please enter a location');
-    } else {
-      this.changeView('map');
+    } else if (inputLocation === 'Use Current Location') {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            console.log('position', position);
+            this.setState({
+              currentLocation: {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude,
+              },
+            });
+          },
+        );
+        console.log(this.state.currentLocation);
+      } else {
+        alert('Please enable location services');
+      }
     }
+    this.changeView('map');
   }
 
   getNewLocation(location) {

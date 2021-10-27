@@ -11,7 +11,7 @@ import { faMapMarkerAlt, faDirections } from '@fortawesome/free-solid-svg-icons'
 import { GOOGLE_API_KEY } from '../../../server/config.js';
 
 const Map = ({
-  inputText, updateResults, water, changeView, getNewLocation, getNewLocationInfo,
+  inputText, updateResults, water, changeView, getNewLocation, getNewLocationInfo, currentLocation,
 }) => {
   let map;
   let marker;
@@ -21,7 +21,6 @@ const Map = ({
   let latitude;
   let longitude;
   let calcLatLng;
-  let currentLocation;
   let markerCount = 0;
 
   // my current location: (33.889390, -117.964080)
@@ -30,35 +29,13 @@ const Map = ({
   //   inputText = 'San Francisco';
   // }
 
-  if (newLocation !== '') {
-    currentLocation = newLocation;
-  }
+  // if (newLocation !== '') {
+  //   currentLocation = newLocation;
+  // }
 
   const [mapView, setMapView] = useState('readOnly');
   const [newLocation, setNewLocation] = useState('');
   const [searchLocation, setSearchLocation] = useState('');
-
-  // get current location
-  const getCurrentLocation = (input) => {
-    console.log('get current location');
-    if (input === 'Use Current Location') {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            console.log('position', position);
-            currentLocation = {
-              lat: position.coords.latitude,
-              lng: position.coords.longitude,
-            };
-          },
-        );
-        console.log(currentLocation);
-        return currentLocation;
-      }
-      alert('Please enable location services');
-    }
-    return null;
-  };
 
   // call to use Google Maps API
   const loader = new Loader({
@@ -104,9 +81,10 @@ const Map = ({
         // get distance between the current location and result marker
         const distService = new google.maps.DistanceMatrixService();
         // console.log('location submitted to distService', inputText);
+
         distService.getDistanceMatrix(
           {
-            origins: [inputText],
+            origins: [inputText === 'Use Current Location' ? currentLocation : inputText],
             destinations: [place.geometry.location],
             travelMode: 'WALKING',
             unitSystem: google.maps.UnitSystem.IMPERIAL,
@@ -227,6 +205,9 @@ const Map = ({
 
   // Primary Function: initiates the map using options and functions above ---------------------//
   const initMap = (address) => {
+    if (inputText === 'Use Current Location' && currentLocation === '') {
+      return;
+    }
     loader.load()
       .then(() => {
         map = new google.maps.Map(document.getElementById('map'), mapOptions);
@@ -337,7 +318,7 @@ const Map = ({
 
         const renderResults = (searchText) => {
           console.log('processing', searchText);
-          if (!currentLocation) {
+          if (currentLocation === '') {
             // converts address to lat/lng required for nearby places search
             geocoder = new google.maps.Geocoder();
             geocoder
@@ -384,8 +365,8 @@ const Map = ({
   };
   // End of initMap Wrapper -----------------------------------------------------------//
 
-  useEffect(() => getCurrentLocation(), [navigator.geolocation]);
-  useEffect(() => initMap(inputText), [navigator.geolocation, mapView]);
+  // useEffect(() => getCurrentLocation(), [navigator.geolocation]);
+  useEffect(() => initMap(inputText), [currentLocation, mapView]);
   useEffect(() => getNewLocation(newLocation), [newLocation]);
 
   return (
@@ -404,6 +385,7 @@ Map.propTypes = {
   changeView: PropTypes.func.isRequired,
   getNewLocation: PropTypes.func.isRequired,
   getNewLocationInfo: PropTypes.func.isRequired,
+  currentLocation: PropTypes.string.isRequired,
 };
 
 Map.defaultProps = {

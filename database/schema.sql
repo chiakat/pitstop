@@ -1,4 +1,5 @@
 sqlite3 toiletsandtap.db;
+
 -- ---
 -- CREATE TABLES
 -- ---
