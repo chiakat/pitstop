@@ -34,6 +34,12 @@ html, body {
   font-size: min(4vh, 5vw);
 }
 
+h3 {
+  font-weight: 500;
+  align-self: center;
+  justify-self: center;
+}
+
 #logo {
   height: 8vh;
   margin-top: 3vh;
@@ -78,7 +84,7 @@ button {
   padding: 2vh;
   flex-grow: 0;
   cursor: pointer;
-  font-size: max(min(3vh, calc(2rem + 1vw)), 22px);
+  font-size: max(min(2.2vh, calc(2rem + 1vw)), 22px);
   border: none;
   font-family: 'Quicksand', sans-serif;
   color: #002a33;
@@ -112,7 +118,7 @@ button:disabled {
   margin-top: 10vh;
   max-width: 700px;
   width: 80%;
-  font-size: max(min(2vh, calc(2rem + 1vw)), 22px);
+  font-size: max(min(2.2vh, calc(2rem + 1vw)), 22px);
 }
 
 .search {
@@ -123,6 +129,12 @@ button:disabled {
 .search button {
   width: 47.5%;
   margin: 5% 0%;
+}
+
+#search {
+  font-size: max(min(2.2vh, calc(2rem + 1vw)), 22px);
+  padding: 2.5vh;
+  margin-bottom: max(2vh, 2vw);
 }
 
 #go:hover {
@@ -141,10 +153,7 @@ input {
   margin: 5% 0%;
 }
 
-.search-container input {
-  padding: 3vh;
-  font-size: max(min(2vh, calc(2rem + 1vw)), 22px);
-}
+
 
 /* Map ------------------------------------*/
 

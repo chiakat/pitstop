@@ -311,7 +311,7 @@ class App extends React.Component {
       <div className="header">
         <img id="logo" alt="toilet and tap logo" src="/images/toilettaplogo_white.png" />
         {/* <p>Toilets &#38; Tap</p> */}
-        <p>PitStop</p>
+        <h3>PitStop</h3>
       </div>
     );
   }
