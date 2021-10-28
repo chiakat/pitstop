@@ -8,7 +8,6 @@ import { Loader } from '@googlemaps/js-api-loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 
-
 const Directions = ({ currentLocation, destination }) => {
   // call to use Google Maps API
   const loader = new Loader({
@@ -49,7 +48,7 @@ const Directions = ({ currentLocation, destination }) => {
         travelMode: 'WALKING',
       };
       directionsService.route(request, (response, status) => {
-        if (status == 'OK') {
+        if (status === 'OK') {
           directionsRenderer.setDirections(response);
         }
       });

@@ -16,8 +16,8 @@ const Map = ({
   let geocoder;
   // let infowindow;
   let inputLocation;
-  let latitude;
-  let longitude;
+  let originLat;
+  let originLng;
   let calcLatLng;
   let markerCount = 0;
 
@@ -73,12 +73,14 @@ const Map = ({
           anchor: new google.maps.Point(17, 34),
           scaledSize: new google.maps.Size(30, 30),
         };
-
+        const placeLat = place.geometry.location.lat();
+        const placeLng = place.geometry.location.lng();
         let placeDistance = '';
         let placeDuration = '';
         // get distance between the current location and result marker
         const distService = new google.maps.DistanceMatrixService();
         // console.log('location submitted to distService', inputText);
+        console.log('place geometry location lat lng:', place.geometry.location.lat(), place.geometry.location.lng());
 
         distService.getDistanceMatrix(
           {
@@ -117,6 +119,7 @@ const Map = ({
               <div>${place.formatted_address}</div>
               <div>Status: ${place.business_status}</div>
               <div>${renderRatings(place)}</div>
+              <a href="https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${placeLat},${placeLng}" target="_blank">GO!</a>
               </div>`;
 
             const infowindow = new google.maps.InfoWindow({
@@ -325,9 +328,9 @@ const Map = ({
                 console.log('geocoding result:', result);
                 const { results } = result;
                 inputLocation = results[0].geometry.location;
-                latitude = inputLocation.lat();
-                longitude = inputLocation.lng();
-                calcLatLng = { lat: latitude, lng: longitude };
+                originLat = inputLocation.lat();
+                originLng = inputLocation.lng();
+                calcLatLng = { lat: originLat, lng: originLng };
                 map.setCenter(inputLocation);
                 marker.setPosition(inputLocation);
                 marker.setMap(map);
@@ -384,8 +387,8 @@ Map.propTypes = {
   getNewLocation: PropTypes.func.isRequired,
   getNewLocationInfo: PropTypes.func.isRequired,
   currentLocation: PropTypes.shape({
-    lat: PropTypes.string.isRequired,
-    lng: PropTypes.string.isRequired,
+    lat: PropTypes.number.isRequired,
+    lng: PropTypes.number.isRequired,
   }),
 };
 
