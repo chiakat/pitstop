@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faTint, faToilet, faSearch, faHome, faMap, faListUl, faPlus,
+  faTint, faToilet, faSearch, faHome, faMap, faListUl, faPlus, faDirections,
 } from '@fortawesome/free-solid-svg-icons';
 
 import AddMarker from './components/AddMarker.jsx';

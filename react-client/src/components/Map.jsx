@@ -119,7 +119,9 @@ const Map = ({
               <div>${place.formatted_address}</div>
               <div>Status: ${place.business_status}</div>
               <div>${renderRatings(place)}</div>
-              <a href="https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${placeLat},${placeLng}" target="_blank">GO!</a>
+              <a href="https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${placeLat},${placeLng}" target="_blank">
+              Get Directions
+              </a>
               </div>`;
 
             const infowindow = new google.maps.InfoWindow({

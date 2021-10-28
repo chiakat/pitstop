@@ -50,6 +50,8 @@ const Directions = ({ currentLocation, destination }) => {
       directionsService.route(request, (response, status) => {
         if (status === 'OK') {
           directionsRenderer.setDirections(response);
+        } else {
+          window.alert('Directions request failed due to ' + status);
         }
       });
     };

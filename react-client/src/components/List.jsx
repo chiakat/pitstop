@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Loader } from '@googlemaps/js-api-loader';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDirections } from '@fortawesome/free-solid-svg-icons';
 
-const List = ({ results, changeView }) => {
+const List = ({ results, changeView, inputLocation, currentLocation }) => {
   const handleClick = (place) => {
     console.log('clicked', place);
     changeView('directions');
@@ -53,6 +55,15 @@ const List = ({ results, changeView }) => {
     return null;
   };
 
+  const renderLink = (place) => {
+    const originLat = currentLocation.Lat;
+    const originLng = currentLocation.Lng;
+    console.log(place);
+    // const placeLat = place.geometry.location.lat();
+    // const placeLng = place.geometry.location.lng();
+    // return `https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${placeLat},${placeLng}`;
+  };
+
   return (
     <>
       <div className="filters">
@@ -78,6 +89,7 @@ const List = ({ results, changeView }) => {
                 </div>
                 {renderRatings(place)}
               </div>
+              <a href={renderLink()} target="_blank" rel="noreferrer"><FontAwesomeIcon icon={faDirections} /></a>
             </li>
           ))}
         </ul>
@@ -87,7 +99,7 @@ const List = ({ results, changeView }) => {
 };
 
 List.propTypes = {
-  results: PropTypes.arrayOf.isRequired,
+  results: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
 export default List;
