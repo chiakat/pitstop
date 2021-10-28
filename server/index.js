@@ -5,6 +5,8 @@ const db = require('../database');
 const app = express();
 const PORT = 3030;
 
+require('dotenv').config();
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/../react-client/dist`));

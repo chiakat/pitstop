@@ -4,6 +4,7 @@
 config
 config.js
 aws-mvp.pem
+.env
 
 # Logs
 logs

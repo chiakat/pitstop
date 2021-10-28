@@ -8,8 +8,6 @@ import { Loader } from '@googlemaps/js-api-loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faDirections } from '@fortawesome/free-solid-svg-icons';
 
-import { GOOGLE_API_KEY } from '../../../server/config.js';
-
 const Map = ({
   inputText, updateResults, water, changeView, getNewLocation, getNewLocationInfo, currentLocation,
 }) => {
@@ -39,7 +37,7 @@ const Map = ({
 
   // call to use Google Maps API
   const loader = new Loader({
-    apiKey: GOOGLE_API_KEY,
+    apiKey: process.env.REACT_APP_GOOGLE_API_KEY,
     version: 'weekly',
     libraries: ['places'],
   });
@@ -385,11 +383,15 @@ Map.propTypes = {
   changeView: PropTypes.func.isRequired,
   getNewLocation: PropTypes.func.isRequired,
   getNewLocationInfo: PropTypes.func.isRequired,
-  currentLocation: PropTypes.string.isRequired,
+  currentLocation: PropTypes.shape({
+    lat: PropTypes.string.isRequired,
+    lng: PropTypes.string.isRequired,
+  }),
 };
 
 Map.defaultProps = {
   inputText: 'San Francisco',
+  currentLocation: '',
 };
 
 export default Map;

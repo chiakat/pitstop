@@ -1,11 +1,11 @@
 {
   "name": "mvp",
   "version": "1.0.0",
-  "description": "MVP for Toilet & Tap - a webapp that finds free restrooms and water fountains nearby",
+  "description": "MVP for PitStop - a webapp that finds free restrooms and water fountains nearby",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server/index.js",
+    "start": "set NODE_ENV=dev && nodemon server/index.js",
     "react-dev": "webpack --config ./webpack.config.js --mode development -w"
   },
   "repository": {
@@ -27,8 +27,11 @@
     "@fortawesome/react-fontawesome": "^0.1.15",
     "@googlemaps/js-api-loader": "^1.12.5",
     "axios": "^0.23.0",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jquery": "^3.6.0",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -40,6 +43,7 @@
     "@babel/preset-env": "^7.15.8",
     "@babel/preset-react": "^7.14.5",
     "babel-loader": "^8.2.2",
+    "dotenv-webpack": "^7.0.3",
     "eslint": "^7.32.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-plugin-import": "^2.25.2",

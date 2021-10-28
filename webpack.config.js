@@ -1,13 +1,15 @@
-var path = require('path');
-var SRC_DIR = path.join(__dirname, '/react-client/src');
-var DIST_DIR = path.join(__dirname, '/react-client/dist');
+const path = require('path');
+
+const SRC_DIR = path.join(__dirname, '/react-client/src');
+const DIST_DIR = path.join(__dirname, '/react-client/dist');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   entry: `${SRC_DIR}/index.jsx`,
   devtool: 'eval-source-map',
   output: {
     filename: 'bundle.js',
-    path: DIST_DIR
+    path: DIST_DIR,
   },
   module: {
     rules: [
@@ -15,25 +17,31 @@ module.exports = {
         test: /\.(js|jsx)?/,
         exclude: [
           /node_modules/,
-          "/Users/katherineyu/bootcamp/mvp/server/config.js",
         ],
         use: {
-          loader: "babel-loader",
+          loader: 'babel-loader',
           options: {
             presets: [
-              "@babel/preset-env",
-              "@babel/preset-react"
+              '@babel/preset-env',
+              '@babel/preset-react',
             ],
             plugins: [
-              ["@babel/plugin-transform-runtime",
+              ['@babel/plugin-transform-runtime',
                 {
-                  "regenerator": true
-                }
-              ]
-            ]
-          }
-        }
-      }
-    ]
-  }
+                  regenerator: true,
+                },
+              ],
+            ],
+          },
+        },
+      },
+    ],
+  },
+  // resolve: {
+  //   fallback: {
+  //     path: require.resolve('path-browserify'),
+  //     os: require.resolve('os-browserify/browser'),
+  //   },
+  // },
+  plugins: [new Dotenv()],
 };

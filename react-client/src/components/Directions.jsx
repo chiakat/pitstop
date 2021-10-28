@@ -7,12 +7,12 @@ import PropTypes from 'prop-types';
 import { Loader } from '@googlemaps/js-api-loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
-import { GOOGLE_API_KEY } from '../../../server/config.js';
+
 
 const Directions = ({ currentLocation, destination }) => {
   // call to use Google Maps API
   const loader = new Loader({
-    apiKey: GOOGLE_API_KEY,
+    apiKey: process.env.REACT_APP_GOOGLE_API_KEY,
     version: 'weekly',
     libraries: ['places'],
   });
