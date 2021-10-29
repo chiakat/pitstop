@@ -92,13 +92,6 @@ const Map = ({
               return '';
             };
 
-            const renderLink = () => {
-              if (currentLocation === '') {
-                return `https://www.google.com/maps/dir/?api=1&origin=${inputLocation.lat},${inputLocation.lng}&destination=${placeLat},${placeLng}&travelmode=walking`;
-              }
-              return `https://www.google.com/maps/dir/?api=1&origin=${currentLocation.lat},${currentLocation.lng}&destination=${placeLat},${placeLng}&travelmode=walking`;
-            };
-
             const contentString = `<div class="info">
               <h4>${place.name}</h4>
               <div class="info-labels">
@@ -111,7 +104,7 @@ const Map = ({
               <div>${place.formatted_address}</div>
               <div>Status: ${place.business_status}</div>
               <div>${renderRatings(place)}</div>
-              <a href=${renderLink()} target="_blank">
+              <a href="https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${placeLat},${placeLng}&travelmode=walking" target="_blank">
               Get Directions
               </a>
               </div>`;
@@ -290,6 +283,8 @@ const Map = ({
                 alert(`Geocode was not successful for the following reason: ${e}`);
               });
           } else {
+            originLat = currentLocation.lat;
+            originLng = currentLocation.lng;
             map.setCenter(currentLocation);
             marker.setPosition(currentLocation);
             marker.setMap(map);
