@@ -40,8 +40,6 @@ class App extends React.Component {
     this.getNewLocation = this.getNewLocation.bind(this);
     this.getNewLocationInfo = this.getNewLocationInfo.bind(this);
     this.renderNavBar = this.renderNavBar.bind(this);
-    this.getDirections = this.getDirections.bind(this);
-    this.getDistanceTime = this.getDistanceTime.bind(this);
     this.updateLatLng = this.updateLatLng.bind(this);
   }
 
@@ -87,22 +85,9 @@ class App extends React.Component {
     });
   }
 
-  getDistanceTime(dist, time) {
-    this.setState({
-      distance: dist,
-      duration: time,
-    });
-  }
-
   getDestination(place) {
     this.setState({
       destination: place,
-    });
-  }
-
-  getDirections(route) {
-    this.setState({
-      directions: route,
     });
   }
 
