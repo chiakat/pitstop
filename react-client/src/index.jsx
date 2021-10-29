@@ -7,15 +7,11 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faTint, faToilet, faSearch, faHome, faMap, faListUl, faPlus, faDirections,
+  faSearch, faHome, faMap, faListUl, faPlus,
 } from '@fortawesome/free-solid-svg-icons';
-
-import AddMarker from './components/AddMarker.jsx';
 import List from './components/List.jsx';
 import Map from './components/Map.jsx';
 import AddForm from './components/AddForm.jsx';
-import Directions from './components/Directions.jsx';
-
 
 class App extends React.Component {
   constructor() {
@@ -24,6 +20,7 @@ class App extends React.Component {
       view: 'home',
       currentLocation: '',
       inputLocation: '',
+      inputLatLng: '',
       toilets: true,
       water: false,
       results: [],
@@ -43,39 +40,12 @@ class App extends React.Component {
     this.toggleWater = this.toggleWater.bind(this);
     this.toggleToilets = this.toggleToilets.bind(this);
     this.updateResults = this.updateResults.bind(this);
-    // this.getCurrentLocation = this.getCurrentLocation(this);
     this.getNewLocation = this.getNewLocation.bind(this);
     this.getNewLocationInfo = this.getNewLocationInfo.bind(this);
     this.renderNavBar = this.renderNavBar.bind(this);
     this.getDirections = this.getDirections.bind(this);
     this.getDistanceTime = this.getDistanceTime.bind(this);
   }
-
-  componentDidMount() {
-
-  }
-
-  // // get current location
-  // getCurrentLocation() {
-  //   console.log('get current location');
-  //   if (input === 'Use Current Location') {
-  //     if (navigator.geolocation) {
-  //       navigator.geolocation.getCurrentPosition(
-  //         (position) => {
-  //           console.log('position', position);
-  //           currentLocation = {
-  //             lat: position.coords.latitude,
-  //             lng: position.coords.longitude,
-  //           };
-  //         },
-  //       );
-  //       console.log(currentLocation);
-  //       return currentLocation;
-  //     }
-  //     alert('Please enable location services');
-  //   }
-  //   return null;
-  // };
 
   handleChange(e) {
     this.setState({
@@ -102,12 +72,18 @@ class App extends React.Component {
             });
           },
         );
-        console.log(this.state.currentLocation);
       } else {
         alert('Please enable location services');
       }
     }
     this.changeView('map');
+  }
+
+  updateLatLng(latitude, longitude) {
+    this.setState({
+      lat: latitude,
+      lng: longitude,
+    })
   }
 
   getNewLocation(location) {
@@ -191,7 +167,7 @@ class App extends React.Component {
   renderView() {
     const {
       view, inputLocation, currentLocation, newLocation, newLocationInfo,
-      results, toilets, water, newAddress, destination, getDirections,
+      results, toilets, water, newAddress, destination,
     } = this.state;
     if (view === 'map') {
       this.renderNavBar();
@@ -223,34 +199,11 @@ class App extends React.Component {
       );
     } if (view === 'add') {
       return (
-      //   <Map
-      //     changeView={this.changeView}
-      //     updateResults={this.updateResults}
-      //     getNewLocation={this.getNewLocation}
-      //     getNewLocationInfo={this.getNewLocationInfo}
-      //     getDirections={this.getDirections}
-      //     inputText={inputLocation}
-      //     currentLocation={currentLocation}
-      //     toilets={toilets}
-      //     water={water}
-      //     newLocationInfo={newLocationInfo}
-      //     editMode={editMode}
-      //   />
         <AddForm
           changeView={this.changeView}
           newLocation={newLocation}
           newLocationInfo={newLocationInfo}
           newAddress={newAddress}
-        />
-      );
-    }
-    if (view === 'directions') {
-      return (
-        <Directions
-          changeView={this.changeView}
-          destination={destination}
-          currentLocation={currentLocation}
-          getDirections={this.getDirections}
         />
       );
     }
@@ -265,7 +218,6 @@ class App extends React.Component {
               id={toilets ? 'toilets-active' : 'toilets-inactive'}
               onClick={this.toggleToilets}
             >
-              {/* <FontAwesomeIcon icon={faToilet} /> */}
               Toilets
             </button>
             <button
@@ -273,7 +225,6 @@ class App extends React.Component {
               id={water ? 'water-active' : 'water-inactive'}
               onClick={this.toggleWater}
             >
-              {/* <FontAwesomeIcon icon={faTint} /> */}
               Water
             </button>
           </div>
@@ -349,7 +300,6 @@ class App extends React.Component {
     return (
       <div className="header">
         <img id="logo" alt="toilet and tap logo" src="/images/toilettaplogo_white.png" />
-        {/* <p>Toilets &#38; Tap</p> */}
         <h3>PitStop</h3>
       </div>
     );
@@ -362,14 +312,17 @@ class App extends React.Component {
         <div className="main">
           {this.renderView()}
         </div>
-        {/* <div className="footer">
-          <a target="_blank" href="https://icons8.com/icon/2538/toilet">Toilet</a>,
-          <a target="_blank" href="https://icons8.com/icon/CCbPUyD6avdx/water">Water</a>,
-          <a target="_blank" href="https://icons8.com/icon/85149/marker">Marker</a>,
-          <a target="_blank" href="https://icons8.com/icon/10660/drinking-fountain"> Drinking Fountain </a>
-           icons by
-          <a target="_blank" href="https://icons8.com"> Icons8. </a>
-        </div> */}
+        <div className="footer">
+          <a target="_blank" href="https://icons8.com/icon/2538/toilet" rel="noreferrer">Toilet</a>
+          ,
+          <a target="_blank" href="https://icons8.com/icon/CCbPUyD6avdx/water" rel="noreferrer">Water</a>
+          ,
+          <a target="_blank" href="https://icons8.com/icon/85149/marker" rel="noreferrer">Marker</a>
+          ,
+          <a target="_blank" href="https://icons8.com/icon/10660/drinking-fountain" rel="noreferrer"> Drinking Fountain </a>
+          icons by
+          <a target="_blank" href="https://icons8.com" rel="noreferrer"> Icons8. </a>
+        </div>
       </div>
     );
   }

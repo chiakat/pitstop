@@ -1,42 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Loader } from '@googlemaps/js-api-loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDirections } from '@fortawesome/free-solid-svg-icons';
 
-const List = ({ results, changeView, inputLocation, currentLocation }) => {
-  const handleClick = (place) => {
-    console.log('clicked', place);
-    changeView('directions');
-    // loader.load()
-    //   .then(() => {
-    //     const getDirections = (place) => {
-    //       const directionsService = new google.maps.DirectionsService();
-    //       const directionsRenderer = new google.maps.DirectionsRenderer();
-    //       const mapOptions = {
-    //         zoom: 7,
-    //         center: currentLocation,
-    //       };
-    //       const map = new google.maps.Map(document.getElementById('map'), mapOptions);
-    //       directionsRenderer.setMap(map);
-    //       directionsRenderer.setPanel(document.getElementById('directionsPanel'));
-    //     };
-
-    //     const calcRoute = () => {
-    //       const request = {
-    //         origin: [inputText],
-    //         destination: [place.geometry.location],
-    //         travelMode: 'WALKING',
-    //       };
-    //       directionsService.route(request, (response, status) => {
-    //         if (status == 'OK') {
-    //           directionsRenderer.setDirections(response);
-    //         }
-    //       });
-    //     };
-    //   });
-  };
-
+const List = ({
+  results, changeView, inputText, currentLocation,
+}) => {
   const renderRatings = (place) => {
     if (place.user_ratings_total > 0) {
       return (
@@ -56,12 +25,17 @@ const List = ({ results, changeView, inputLocation, currentLocation }) => {
   };
 
   const renderLink = (place) => {
-    const originLat = currentLocation.Lat;
-    const originLng = currentLocation.Lng;
-    console.log(place);
-    // const placeLat = place.geometry.location.lat();
-    // const placeLng = place.geometry.location.lng();
-    // return `https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${placeLat},${placeLng}`;
+    const originLat = currentLocation.lat;
+    const originLng = currentLocation.lng;
+    const inputTextArr = inputText.split(' ');
+    const inputTextQuery = inputTextArr.reduce((prevWord, currentWord) => `${prevWord}+${currentWord}`);
+    console.log(inputTextQuery);
+    const placeLat = place.geometry.location.lat();
+    const placeLng = place.geometry.location.lng();
+    if (currentLocation === '') {
+      return `https://www.google.com/maps/dir/?api=1&origin=${inputTextQuery}&destination=${placeLat},${placeLng}&travelmode=walking`;
+    }
+    return `https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${placeLat},${placeLng}$travelmode=walking`;
   };
 
   return (
@@ -89,7 +63,7 @@ const List = ({ results, changeView, inputLocation, currentLocation }) => {
                 </div>
                 {renderRatings(place)}
               </div>
-              <a href={renderLink()} target="_blank" rel="noreferrer"><FontAwesomeIcon icon={faDirections} /></a>
+              <a href={renderLink(place)} target="_blank" rel="noreferrer"><FontAwesomeIcon icon={faDirections} /></a>
             </li>
           ))}
         </ul>
@@ -100,6 +74,14 @@ const List = ({ results, changeView, inputLocation, currentLocation }) => {
 
 List.propTypes = {
   results: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+  currentLocation: PropTypes.shape({
+    lat: PropTypes.number.isRequired,
+    lng: PropTypes.number.isRequired,
+  }),
+};
+
+List.defaultProps = {
+  currentLocation: '',
 };
 
 export default List;

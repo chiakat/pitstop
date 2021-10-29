@@ -21,16 +21,6 @@ const Map = ({
   let calcLatLng;
   let markerCount = 0;
 
-  // my current location: (33.889390, -117.964080)
-  // use SF as default map view if no location entered
-  // if (inputText === '') {
-  //   inputText = 'San Francisco';
-  // }
-
-  // if (newLocation !== '') {
-  //   currentLocation = newLocation;
-  // }
-
   const [mapView, setMapView] = useState('readOnly');
   const [newLocation, setNewLocation] = useState('');
   const [searchLocation, setSearchLocation] = useState('');
@@ -77,10 +67,9 @@ const Map = ({
         const placeLng = place.geometry.location.lng();
         let placeDistance = '';
         let placeDuration = '';
+
         // get distance between the current location and result marker
         const distService = new google.maps.DistanceMatrixService();
-        // console.log('location submitted to distService', inputText);
-        console.log('place geometry location lat lng:', place.geometry.location.lat(), place.geometry.location.lng());
 
         distService.getDistanceMatrix(
           {
@@ -92,9 +81,6 @@ const Map = ({
             avoidTolls: true,
           }, (response, status) => {
             if (status !== 'OK' || !response) return;
-            // console.log('here are the responses', response);
-            // console.log('distance', response.rows[0].elements[0].distance.text);
-            // console.log('duration', response.rows[0].elements[0].duration.text);
             placeDistance = response.rows[0].elements[0].distance.text;
             placeDuration = response.rows[0].elements[0].duration.text;
 
@@ -104,8 +90,6 @@ const Map = ({
               }
               return '';
             };
-
-            // const photo = place.photos[0].photo_reference ? `https://maps.googleapis.com/maps/api/place/photo?maxwidth=100&photo_reference=${place.photos[0].photo_reference}&key=${GOOGLE_API_KEY}` : '';
 
             const contentString = `<div class="info">
               <h4>${place.name}</h4>
@@ -119,7 +103,7 @@ const Map = ({
               <div>${place.formatted_address}</div>
               <div>Status: ${place.business_status}</div>
               <div>${renderRatings(place)}</div>
-              <a href="https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${placeLat},${placeLng}" target="_blank">
+              <a href="https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${placeLat},${placeLng}&travelmode=walking" target="_blank">
               Get Directions
               </a>
               </div>`;
@@ -163,32 +147,14 @@ const Map = ({
       const service = new google.maps.places.PlacesService(map);
       service.textSearch(
         { location, radius: 100, query: 'public restroom' },
-        // alt search: restroom|safeway|target|library|toilet
-        (results, status, pagination) => {
+        (results, status) => {
           if (status !== 'OK' || !results) return;
           renderMarkers(results, map);
-          // console.log('here are the results', results);
           updateResults(results);
         },
       );
     });
   };
-
-  // // Perform a nearby search.
-  // const searchNearby = (location) => {
-  //   loader.load().then((google) => {
-  //     const service = new google.maps.places.PlacesService(map);
-  //     service.nearbySearch(
-  //       { location, radius: 1000, keyword: keywords },
-  //       (results, status, pagination) => {
-  //         if (status !== 'OK' || !results) return;
-  //         renderMarkers(results, map);
-  //         // console.log('here are the results', results);
-  //         updateResults(results);
-  //       },
-  //     );
-  //   });
-  // };
 
   // finds the address of the location that was clicked and change to add Form view
   const addDetail = () => {
@@ -294,31 +260,6 @@ const Map = ({
           });
         };
 
-        // // search based on location entered in search box
-        // const searchBox = document.createElement("input");
-        // searchBox.textContent = "Search Current Location";
-        // searchBox.classList.add("custom-map-control-button");
-        // map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchBox);
-        // searchBox.addEventListener("change", (e) => setSearchLocation(e.target.value));
-        // searchBox.addEventListener("submit", (e) => setSearchLocation(e.target.value));
-
-        // // create search box to submit request
-        // const searchButton = document.createElement("button");
-        // searchButton.textContext = "Search";
-        // searchButton.classList.add("custom-map-control-button");
-        // map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchButton);
-        // searchButton.addEventListener("click", () => renderResults(searchLocation));
-
-        // // Create the search box and link it to the UI element.
-        // const input = document.getElementById("pac-input");
-        // const searchBox = new google.maps.places.SearchBox(input);
-
-        // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-        // // Bias the SearchBox results towards current map's viewport.
-        // map.addListener("bounds_changed", () => {
-        //   searchBox.setBounds(map.getBounds());
-        // });
-
         const renderResults = (searchText) => {
           console.log('processing', searchText);
           if (currentLocation === '') {
@@ -368,7 +309,6 @@ const Map = ({
   };
   // End of initMap Wrapper -----------------------------------------------------------//
 
-  // useEffect(() => getCurrentLocation(), [navigator.geolocation]);
   useEffect(() => initMap(inputText), [currentLocation, mapView]);
   useEffect(() => getNewLocation(newLocation), [newLocation]);
 
