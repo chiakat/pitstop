@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React from 'react';
-import $ from 'jquery';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
@@ -25,10 +24,7 @@ class AddForm extends React.Component {
       hasSoap: false,
       hasChangingTable: false,
       rating: 0,
-      avg_rating: 0,
-      count_rating: 0,
       type: 'toilet',
-      business_status: 'O',
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -80,10 +76,8 @@ class AddForm extends React.Component {
         rating,
         type,
       })
-        .then((response) => {
+        .then(() => {
           const { changeView } = this.props;
-          console.log('success');
-          console.log(response);
           // clear states after successful submission
           this.setState({
             place_id: '',
@@ -248,6 +242,7 @@ AddForm.propTypes = {
     lat: PropTypes.func,
     lng: PropTypes.func,
   }).isRequired,
+  newAddress: PropTypes.string.isRequired,
 };
 
 export default AddForm;

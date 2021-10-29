@@ -28,9 +28,6 @@ class App extends React.Component {
       newLocationInfo: '',
       newAddress: '',
       destination: '',
-      distance: '',
-      time: '',
-      editMode: false,
     };
 
     this.changeView = this.changeView.bind(this);
@@ -45,6 +42,7 @@ class App extends React.Component {
     this.renderNavBar = this.renderNavBar.bind(this);
     this.getDirections = this.getDirections.bind(this);
     this.getDistanceTime = this.getDistanceTime.bind(this);
+    this.updateLatLng = this.updateLatLng.bind(this);
   }
 
   handleChange(e) {
@@ -56,14 +54,12 @@ class App extends React.Component {
   handleSearch(e) {
     const { inputLocation } = this.state;
     e.preventDefault();
-    console.log('Searching', inputLocation);
     if (!inputLocation) {
       alert('Please enter a location');
     } else if (inputLocation === 'Use Current Location') {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            console.log('position', position);
             this.setState({
               currentLocation: {
                 lat: position.coords.latitude,
@@ -77,13 +73,6 @@ class App extends React.Component {
       }
     }
     this.changeView('map');
-  }
-
-  updateLatLng(latitude, longitude) {
-    this.setState({
-      lat: latitude,
-      lng: longitude,
-    })
   }
 
   getNewLocation(location) {
@@ -117,6 +106,12 @@ class App extends React.Component {
     });
   }
 
+  updateLatLng(latLng) {
+    this.setState({
+      inputLatLng: latLng,
+    });
+  }
+
   toggleToilets() {
     const { toilets } = this.state;
     this.setState({
@@ -139,7 +134,6 @@ class App extends React.Component {
 
   updateResults(searchResults) {
     // send results to database
-    console.log('results to send', searchResults);
     this.setState({
       results: searchResults,
     });
@@ -167,7 +161,7 @@ class App extends React.Component {
   renderView() {
     const {
       view, inputLocation, currentLocation, newLocation, newLocationInfo,
-      results, toilets, water, newAddress, destination,
+      results, toilets, water, newAddress, destination, inputLatLng,
     } = this.state;
     if (view === 'map') {
       this.renderNavBar();
@@ -178,6 +172,7 @@ class App extends React.Component {
           getNewLocation={this.getNewLocation}
           getNewLocationInfo={this.getNewLocationInfo}
           getDirections={this.getDirections}
+          updateLatLng={this.updateLatLng}
           inputText={inputLocation}
           currentLocation={currentLocation}
           toilets={toilets}
@@ -194,7 +189,7 @@ class App extends React.Component {
           currentLocation={currentLocation}
           destination={destination}
           getDirections={this.getDirections}
-
+          inputLatLng={inputLatLng}
         />
       );
     } if (view === 'add') {
@@ -242,6 +237,17 @@ class App extends React.Component {
             </datalist>
             <button type="submit" id="go"><FontAwesomeIcon icon={faSearch} /></button>
           </form>
+        </div>
+        <div className="footer">
+          <a target="_blank" href="https://icons8.com/icon/2538/toilet" rel="noreferrer">Toilet</a>
+          ,
+          <a target="_blank" href="https://icons8.com/icon/CCbPUyD6avdx/water" rel="noreferrer">Water</a>
+          ,
+          <a target="_blank" href="https://icons8.com/icon/85149/marker" rel="noreferrer">Marker</a>
+          ,
+          <a target="_blank" href="https://icons8.com/icon/10660/drinking-fountain" rel="noreferrer"> Drinking Fountain </a>
+          icons by
+          <a target="_blank" href="https://icons8.com" rel="noreferrer"> Icons8. </a>
         </div>
       </>
     );
@@ -311,17 +317,6 @@ class App extends React.Component {
         {this.renderNavBar()}
         <div className="main">
           {this.renderView()}
-        </div>
-        <div className="footer">
-          <a target="_blank" href="https://icons8.com/icon/2538/toilet" rel="noreferrer">Toilet</a>
-          ,
-          <a target="_blank" href="https://icons8.com/icon/CCbPUyD6avdx/water" rel="noreferrer">Water</a>
-          ,
-          <a target="_blank" href="https://icons8.com/icon/85149/marker" rel="noreferrer">Marker</a>
-          ,
-          <a target="_blank" href="https://icons8.com/icon/10660/drinking-fountain" rel="noreferrer"> Drinking Fountain </a>
-          icons by
-          <a target="_blank" href="https://icons8.com" rel="noreferrer"> Icons8. </a>
         </div>
       </div>
     );

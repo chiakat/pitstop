@@ -15,13 +15,13 @@ html, body {
   color: white;
   background-color: #002a33;
   font-size: min(max(2vh, 2vw), 22px);
-  height: 100%;
+  height: 95vh;
   margin: 0;
   padding: 0;
 }
 
 .fullScreen {
-  height: 100%;
+  height: 95vh;
 }
 
 .header {
@@ -157,6 +157,16 @@ input {
 
 /* Map ------------------------------------*/
 
+.loading {
+  margin-top: 30%;
+  font-size: 1.5rem;
+  line-height: 2em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .map-container {
   height: 100%;
   display: flex;
@@ -290,6 +300,22 @@ li:nth-child(odd) {
   background-color: #fcfcfc;
 }
 
+.list-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.list-item a {
+  color: #027373;
+  font-size: 1.8rem;
+  align-self: flex-end;
+}
+
+.list-item a:hover {
+  color: rgb(145, 219, 34);
+  font-size: 1.8rem;
+  align-self: flex-end;
+}
 
 /* Form ------------------------------------*/
 .addForm {
@@ -353,13 +379,12 @@ li:nth-child(odd) {
 
 /* Footer ------------------------------------*/
 .footer {
-  position: relative;
+  position: absolute;
   bottom: 0;
   color: rgb(155, 155, 155);
   font-size: min(max(1.2vh, 1vw), 12px);
-  margin-top: 1vh;
   padding-left: 10px;
-  padding-bottom: 10px;
+  margin-bottom: -5%;
 }
 
 .footer a {

@@ -1,10 +1,11 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDirections } from '@fortawesome/free-solid-svg-icons';
 
 const List = ({
-  results, changeView, inputText, currentLocation,
+  results, currentLocation, inputLatLng,
 }) => {
   const renderRatings = (place) => {
     if (place.user_ratings_total > 0) {
@@ -25,17 +26,12 @@ const List = ({
   };
 
   const renderLink = (place) => {
-    const originLat = currentLocation.lat;
-    const originLng = currentLocation.lng;
-    const inputTextArr = inputText.split(' ');
-    const inputTextQuery = inputTextArr.reduce((prevWord, currentWord) => `${prevWord}+${currentWord}`);
-    console.log(inputTextQuery);
     const placeLat = place.geometry.location.lat();
     const placeLng = place.geometry.location.lng();
     if (currentLocation === '') {
-      return `https://www.google.com/maps/dir/?api=1&origin=${inputTextQuery}&destination=${placeLat},${placeLng}&travelmode=walking`;
+      return `https://www.google.com/maps/dir/?api=1&origin=${inputLatLng.lat},${inputLatLng.lng}&destination=${placeLat},${placeLng}&travelmode=walking`;
     }
-    return `https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${placeLat},${placeLng}$travelmode=walking`;
+    return `https://www.google.com/maps/dir/?api=1&origin=${currentLocation.lat},${currentLocation.lng}&destination=${placeLat},${placeLng}&travelmode=walking`;
   };
 
   return (
@@ -48,8 +44,8 @@ const List = ({
       <div className="results">
         <ul id="places">
           {results.map((place) => (
-            <li key={place.place_id}>
-              <div role="button" tabIndex={0} onKeyPress={() => handleClick()} onClick={() => handleClick()}>
+            <li key={place.place_id} className="list-item">
+              <div role="button" tabIndex={0}>
                 <h4>{place.name}</h4>
                 <div>
                   Address:
@@ -63,7 +59,7 @@ const List = ({
                 </div>
                 {renderRatings(place)}
               </div>
-              <a href={renderLink(place)} target="_blank" rel="noreferrer"><FontAwesomeIcon icon={faDirections} /></a>
+              <a href={renderLink(place)} target="_blank" rel="noreferrer" aria-label="Directions"><FontAwesomeIcon icon={faDirections} /></a>
             </li>
           ))}
         </ul>
@@ -74,14 +70,6 @@ const List = ({
 
 List.propTypes = {
   results: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  currentLocation: PropTypes.shape({
-    lat: PropTypes.number.isRequired,
-    lng: PropTypes.number.isRequired,
-  }),
-};
-
-List.defaultProps = {
-  currentLocation: '',
 };
 
 export default List;

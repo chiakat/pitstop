@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-loop-func */
 /* eslint-disable no-console */
 /* eslint-disable no-restricted-syntax */
@@ -6,10 +7,11 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Loader } from '@googlemaps/js-api-loader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMapMarkerAlt, faDirections } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarkerAlt, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 const Map = ({
-  inputText, updateResults, water, changeView, getNewLocation, getNewLocationInfo, currentLocation,
+  inputText, updateResults, water, changeView, getNewLocation,
+  getNewLocationInfo, currentLocation, updateLatLng,
 }) => {
   let map;
   let marker;
@@ -23,7 +25,6 @@ const Map = ({
 
   const [mapView, setMapView] = useState('readOnly');
   const [newLocation, setNewLocation] = useState('');
-  const [searchLocation, setSearchLocation] = useState('');
 
   // call to use Google Maps API
   const loader = new Loader({
@@ -91,6 +92,13 @@ const Map = ({
               return '';
             };
 
+            const renderLink = () => {
+              if (currentLocation === '') {
+                return `https://www.google.com/maps/dir/?api=1&origin=${inputLocation.lat},${inputLocation.lng}&destination=${placeLat},${placeLng}&travelmode=walking`;
+              }
+              return `https://www.google.com/maps/dir/?api=1&origin=${currentLocation.lat},${currentLocation.lng}&destination=${placeLat},${placeLng}&travelmode=walking`;
+            };
+
             const contentString = `<div class="info">
               <h4>${place.name}</h4>
               <div class="info-labels">
@@ -103,7 +111,7 @@ const Map = ({
               <div>${place.formatted_address}</div>
               <div>Status: ${place.business_status}</div>
               <div>${renderRatings(place)}</div>
-              <a href="https://www.google.com/maps/dir/?api=1&origin=${originLat},${originLng}&destination=${placeLat},${placeLng}&travelmode=walking" target="_blank">
+              <a href=${renderLink()} target="_blank">
               Get Directions
               </a>
               </div>`;
@@ -207,15 +215,6 @@ const Map = ({
         addButton.classList.add('custom-map-control-button');
         map.controls[google.maps.ControlPosition.TOP_CENTER].push(addButton);
 
-        // add event listener to add marker where map is clicked
-        google.maps.event.addListener(map, 'click', (event) => {
-          console.log('clicked any time', mapView);
-          if (mapView === 'edit' && markerCount === 0) {
-            console.log('clicked with edit');
-            addMarker(event.latLng);
-          }
-        });
-
         const addMarker = (location) => {
           const newMarker = new google.maps.Marker({
             position: location,
@@ -242,7 +241,6 @@ const Map = ({
           geocoder
             .geocode({ location: marker.getPosition() })
             .then((results) => {
-              console.log('results from reverse geocode', results);
               getNewLocationInfo(results);
             })
             .catch((e) => {
@@ -260,34 +258,38 @@ const Map = ({
           });
         };
 
+        // add event listener to add marker where map is clicked
+        google.maps.event.addListener(map, 'click', (event) => {
+          if (mapView === 'edit' && markerCount === 0) {
+            addMarker(event.latLng);
+          }
+        });
+
         const renderResults = (searchText) => {
-          console.log('processing', searchText);
           if (currentLocation === '') {
             // converts address to lat/lng required for nearby places search
             geocoder = new google.maps.Geocoder();
             geocoder
               .geocode({ address: searchText })
               .then((result) => {
-                console.log('geocoding result:', result);
                 const { results } = result;
                 inputLocation = results[0].geometry.location;
                 originLat = inputLocation.lat();
                 originLng = inputLocation.lng();
                 calcLatLng = { lat: originLat, lng: originLng };
+                updateLatLng(calcLatLng);
                 map.setCenter(inputLocation);
                 marker.setPosition(inputLocation);
                 marker.setMap(map);
                 return calcLatLng;
               })
               .then((currentLatLng) => {
-                console.log('mycurrentlocation', currentLatLng);
                 searchMapByText(currentLatLng);
               })
               .catch((e) => {
                 alert(`Geocode was not successful for the following reason: ${e}`);
               });
           } else {
-            console.log('currentLocation', currentLocation);
             map.setCenter(currentLocation);
             marker.setPosition(currentLocation);
             marker.setMap(map);
@@ -312,6 +314,16 @@ const Map = ({
   useEffect(() => initMap(inputText), [currentLocation, mapView]);
   useEffect(() => getNewLocation(newLocation), [newLocation]);
 
+  if (inputText === 'Use Current Location' && currentLocation === '') {
+    return (
+      <div className="loading">
+        <div>Searching Area...</div>
+        <div>
+          <FontAwesomeIcon icon={faSearch} />
+        </div>
+      </div>
+    );
+  }
   return (
     <>
       <div className="map-container">
@@ -328,15 +340,11 @@ Map.propTypes = {
   changeView: PropTypes.func.isRequired,
   getNewLocation: PropTypes.func.isRequired,
   getNewLocationInfo: PropTypes.func.isRequired,
-  currentLocation: PropTypes.shape({
-    lat: PropTypes.number.isRequired,
-    lng: PropTypes.number.isRequired,
-  }),
+  updateLatLng: PropTypes.func.isRequired,
 };
 
 Map.defaultProps = {
   inputText: 'San Francisco',
-  currentLocation: '',
 };
 
 export default Map;
