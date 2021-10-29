@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+/* global google */
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -34,6 +35,47 @@ const List = ({
     return `https://www.google.com/maps/dir/?api=1&origin=${currentLocation.lat},${currentLocation.lng}&destination=${placeLat},${placeLng}&travelmode=walking`;
   };
 
+  // get distance between the current location and result marker
+  const distService = new google.maps.DistanceMatrixService();
+
+  const renderDistance = (place) => {
+    let placeDistance;
+    distService.getDistanceMatrix(
+      {
+        origins: [currentLocation !== '' ? currentLocation : inputLatLng],
+        destinations: [place.geometry.location],
+        travelMode: 'WALKING',
+        unitSystem: google.maps.UnitSystem.IMPERIAL,
+        avoidHighways: true,
+        avoidTolls: true,
+      }, (response, status) => {
+        if (status !== 'OK' || !response) return;
+        placeDistance = response.rows[0].elements[0].distance.text;
+        console.log(placeDistance);
+      },
+    );
+    return placeDistance;
+  };
+
+  const renderDuration = (place) => {
+    let placeDuration;
+    distService.getDistanceMatrix(
+      {
+        origins: [currentLocation !== '' ? currentLocation : inputLatLng],
+        destinations: [place.geometry.location],
+        travelMode: 'WALKING',
+        unitSystem: google.maps.UnitSystem.IMPERIAL,
+        avoidHighways: true,
+        avoidTolls: true,
+      }, (response, status) => {
+        if (status !== 'OK' || !response) return;
+        placeDuration = response.rows[0].elements[0].duration.text;
+        console.log(placeDuration);
+      },
+    );
+    return placeDuration;
+  };
+
   return (
     <>
       <div className="filters">
@@ -47,6 +89,12 @@ const List = ({
             <li key={place.place_id} className="list-item">
               <div role="button" tabIndex={0}>
                 <h4>{place.name}</h4>
+                <span className="dist">
+                  {renderDistance(place)}
+                </span>
+                <span className="duration">
+                  {renderDuration(place)}
+                </span>
                 <div>
                   Address:
                   {' '}
