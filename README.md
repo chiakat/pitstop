@@ -12,7 +12,7 @@ PitStop, a free water and toilet finder, will instantly show you all free and av
 
 **Created By <a href="https://github.com/chiakat">Katherine Yu</a>**
 
-<br />
+<p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -80,7 +80,7 @@ PitStop is an MVP created during a 2-day solo sprint. I was challenged with idea
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-## Building and running on localhost
+## Getting Started
 First install dependencies:
 npm install
 
