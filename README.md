@@ -20,7 +20,7 @@ PitStop, a free water and toilet finder, will instantly show you all free and av
   <img src="screenshots/home.png" alt="Home Page Screenshot" width="500">
 </div>
 
-PitStop is an MVP created during a 2-day solo sprint. I was challenged with ideating and developing a full-stack app of my choosing during the limited time frame. As an avid long-distance runner who frequently found myself struggling to find restrooms and water fountains during my 2+ hour runs, I created this app to provide an easy way to identify these key resources.
+PitStop is an MVP created during a 2-day solo sprint. I was challenged with ideating and developing a full-stack app of my choosing during the limited time frame. As an avid long-distance runner who frequently struggled to find restrooms and water fountains during my 2+ hour runs, I created this app to provide an easy way to locate these key resources. I hope this app will not only be useful to fellow runners, but any traveler looking to make a quick pitstop.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
