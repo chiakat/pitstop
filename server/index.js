@@ -1,6 +1,4 @@
-/* eslint-disable no-console */
 /* eslint-disable camelcase */
-const functions = require('firebase-functions');
 const express = require('express');
 const db = require('../database');
 
@@ -14,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(`${__dirname}/../react-client/dist`));
 
 // adds the new records to the database
-app.post('/api/addRecord', (req, res) => {
+app.post('/addRecord', (req, res) => {
   console.log('attept to add:', req.body);
   const {
     name, directions, address, hours, publicOrPrivate, isAccessible, male, female,
@@ -48,17 +46,17 @@ app.post('/api/addRecord', (req, res) => {
 });
 
 // adds all api results to the database
-app.post('/api/saveResults', (req, res) => {
+app.post('/saveResults', (req, res) => {
   console.log(req.body);
-  const {
-    place_id, status, address, directions, latitude, longitude,
+  let {
+    place_id, status, address, directions, location, latitude, longitude,
     name, hours, rating, user_ratings_total, type,
   } = req.body;
 
-  const location = JSON.stringify(req.body.location);
+  location = JSON.stringify(location);
   console.log('place_id', place_id);
 
-  const values = [place_id, status, address, directions, location, latitude, longitude,
+  let values = [place_id, status, address, directions, location, latitude, longitude,
     name, hours, rating, user_ratings_total, type];
 
   const insertQuery = `INSERT or REPLACE INTO toiletsandtap(
@@ -76,16 +74,14 @@ app.post('/api/saveResults', (req, res) => {
   });
 });
 
-// // gets all toilet and water fountain data
-// app.get('/', (req, res) => {
-// });
+// gets all toilet and water fountain data
+app.get('/', (req, res) => {
+});
 
-// // updates existing records
-// app.patch('/', (req, res) => {
-// });
+// updates existing records
+app.patch('/', (req, res) => {
+});
 
 app.listen(PORT, () => {
   console.log(`listening on http://localhost:${PORT}`);
 });
-
-exports.api = functions.https.onRequest(app);

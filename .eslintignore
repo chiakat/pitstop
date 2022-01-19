@@ -3,5 +3,5 @@
 **/lib
 **/vendor
 **/*.min.js
-**/client/dist/bundle.js
+**/react-client/dist/bundle.js
 jest.config.js
