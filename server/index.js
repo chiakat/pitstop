@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable camelcase */
 const express = require('express');
 const db = require('../database');
@@ -47,16 +48,14 @@ app.post('/addRecord', (req, res) => {
 
 // adds all api results to the database
 app.post('/saveResults', (req, res) => {
-  console.log(req.body);
-  let {
-    place_id, status, address, directions, location, latitude, longitude,
+  const {
+    place_id, status, address, directions, latitude, longitude,
     name, hours, rating, user_ratings_total, type,
   } = req.body;
 
-  location = JSON.stringify(location);
-  console.log('place_id', place_id);
+  const location = JSON.stringify(req.body.location);
 
-  let values = [place_id, status, address, directions, location, latitude, longitude,
+  const values = [place_id, status, address, directions, location, latitude, longitude,
     name, hours, rating, user_ratings_total, type];
 
   const insertQuery = `INSERT or REPLACE INTO toiletsandtap(
@@ -74,13 +73,13 @@ app.post('/saveResults', (req, res) => {
   });
 });
 
-// gets all toilet and water fountain data
-app.get('/', (req, res) => {
-});
+// // gets all toilet and water fountain data
+// app.get('/', (req, res) => {
+// });
 
-// updates existing records
-app.patch('/', (req, res) => {
-});
+// // updates existing records
+// app.patch('/', (req, res) => {
+// });
 
 app.listen(PORT, () => {
   console.log(`listening on http://localhost:${PORT}`);
